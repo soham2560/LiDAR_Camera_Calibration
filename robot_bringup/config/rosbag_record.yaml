@@ -1,0 +1,17 @@
+# List of topics to record in a rosbag
+---
+topics:
+  - /ASMC/asmc_state
+  - /clock
+  - /dynamic_joint_states
+  - /hand_controller/controller_state
+  - /hand_controller/joint_trajectory
+  - /hand_controller/state
+  - /hand_controller/transition_event
+  - /joint_state_broadcaster/transition_event
+  - /joint_states
+  - /parameter_events
+  - /robot_description
+  - /rosout
+  - /tf
+  - /tf_static

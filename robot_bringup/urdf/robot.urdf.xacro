@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot">
+
+    <!-- ARGS -->
+    <xacro:arg name="USE_WITH_SIM" default="false" />
+    <xacro:arg name="NAMESPACE" default="" />
+
+    <!-- PROPERTIES -->
+    <xacro:property name="PI" value="3.1415926535897931"/>
+
+    <!-- MAP -->
+    <link name="map"/>
+
+    <!-- VELODYNE -->
+    <joint name="velodyne_base_mount_joint" type="fixed">
+        <origin xyz="0 0 0.4" rpy="0 0 0" />
+        <parent link="map"/>
+        <child link="velodyne_base_link"/>
+    </joint>
+
+    <link name="velodyne_base_link">
+      <inertial>
+        <mass value="0.83"/>
+        <origin xyz="0 0 0.03585"/>
+        <inertia ixx="${(0.83 * (3.0*0.0516*0.0516 + 0.0717*0.0717)) / 12.0}" ixy="0" ixz="0" iyy="${(0.83 * (3.0*0.0516*0.0516 + 0.0717*0.0717)) / 12.0}" iyz="0" izz="${0.5 * 0.83 * (0.0516*0.0516)}"/>
+      </inertial>
+      <visual>
+        <geometry>
+          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_base_1.dae"/>
+        </geometry>
+      </visual>
+      <visual>
+        <geometry>
+          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_base_2.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin rpy="0 0 0" xyz="0 0 0.03585"/>
+        <geometry>
+          <cylinder radius="0.0516" length="0.0717"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="velodyne_base_scan_joint" type="fixed">
+      <origin xyz="0 0 0.0377" rpy="0 0 0"/>
+      <parent link="velodyne_base_link"/>
+      <child link="velodyne"/>
+    </joint>
+
+    <link name="velodyne">
+      <inertial>
+        <mass value="0.01"/>
+        <origin xyz="0 0 0"/>
+        <inertia ixx="1e-7" ixy="0" ixz="0" iyy="1e-7" iyz="0" izz="1e-7"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 -0.0377"/>
+        <geometry>
+          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_scan.dae"/>
+        </geometry>
+      </visual>
+    </link>
+
+</robot>
