@@ -158,6 +158,18 @@ def generate_launch_description():
         on_exit=Shutdown(),
         condition=UnlessCondition(use_sim_time)
     )
+    sync_sensors = Node(
+        package='sync_sensors',
+        executable='sync_sensors',
+        name='sync_sensors',
+        output='screen',
+        parameters=[
+            {'topic_image': '/image_raw'},
+            {'topic_pointcloud': '/velodyne_points'},
+            {'queue_size': 10},
+            {'use_approximate_sync': True}
+        ]
+    )
 
     nodes = [
         gz_spawn_entity,
@@ -166,6 +178,7 @@ def generate_launch_description():
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
+        sync_sensors,
         velodyne_hw_if,
         camera_driver
     ]
