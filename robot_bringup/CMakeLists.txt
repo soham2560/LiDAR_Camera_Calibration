@@ -14,6 +14,7 @@ find_package(robot_state_publisher REQUIRED)
 find_package(urdf REQUIRED)
 find_package(velodyne REQUIRED)
 find_package(usb_cam REQUIRED)
+find_package(sync_sensors REQUIRED)
 
 install(
   DIRECTORY config launch urdf meshes rviz config
