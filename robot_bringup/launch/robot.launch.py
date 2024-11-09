@@ -60,6 +60,8 @@ def generate_launch_description():
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
+    camera_params = PathJoinSubstitution(
+        [package_path, 'config', 'usb_cam_params.yaml'])
     
     # Spawn Robot
     gz_spawn_entity = Node(
@@ -146,6 +148,17 @@ def generate_launch_description():
                               'launch', 'velodyne_hw_if.launch.py')]),
             condition=UnlessCondition(use_sim_time))
 
+    camera_driver = Node(
+        package='usb_cam',
+        executable='usb_cam_node_exe',
+        name='usb_cam',
+        output='log',
+        namespace=namespace,
+        parameters=[camera_params],
+        on_exit=Shutdown(),
+        condition=UnlessCondition(use_sim_time)
+    )
+
     nodes = [
         gz_spawn_entity,
         gazebo,
@@ -154,6 +167,7 @@ def generate_launch_description():
         rviz_node,
         rosbag_recorder_launch,
         velodyne_hw_if,
+        camera_driver
     ]
 
     return LaunchDescription(declared_arguments + nodes)

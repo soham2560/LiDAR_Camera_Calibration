@@ -7,8 +7,21 @@ ROS2 Setup to perform LiDAR-Camera Calibration for Mobile Robotics Course (CS7.5
 
 - [LiDAR Camera Calibration](#lidar-camera-calibration)
   - [Table of contents](#table-of-contents)
-  - [Docker Setup](#docker-setup)
   - [Hardware Setup](#hardware-setup)
+  - [Docker Setup](#docker-setup)
+  - [How to Use](#how-to-use)
+
+
+## Hardware Setup
+The repository has currently been setup with
+- RGB Camera: Logitech C270
+  - Setup UDEV Rules by running the `c270.sh` script in the `scripts` folder on **HOST**, and not in container
+    ```bash
+    sudo bash <path to script>/c270.sh
+    ```
+- 3D LiDAR: Velodyne VLP16
+  - LiDAR IP: 172.16.101.71
+  - Host IP: 172.16.101.77
 
 ## Docker Setup
 - To pull latest docker image
@@ -30,11 +43,5 @@ ROS2 Setup to perform LiDAR-Camera Calibration for Mobile Robotics Course (CS7.5
   ```bash
   ros2 launch robot_bringup robot.launch.py use_rviz:=True
   ```
-
-## Hardware Setup
-The repository has currently been setup with
-- 3D LiDAR: Velodyne VLP16
-  - LiDAR IP: 172.16.101.71
-  - Host IP: 172.16.101.77
 
 Note: The README's in this repository are inspired by [this](https://github.com/TheProjectsGuy/MR21-CS7.503) and [this](https://github.com/ankitdhall/lidar_camera_calibration)
