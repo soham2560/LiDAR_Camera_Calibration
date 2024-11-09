@@ -23,14 +23,10 @@ public:
 
         if (use_approximate_sync) {
             approximate_sync_ = std::make_shared<Synchronizer<ApproximateSyncPolicy>>(ApproximateSyncPolicy(queue_size), sub_image_, sub_pointcloud_);
-            approximate_sync_->registerCallback([this](const Image::ConstSharedPtr &image_msg, const PointCloud2::ConstSharedPtr &pointcloud_msg) {
-                publishSyncMessages(image_msg, pointcloud_msg);
-            });
+            approximate_sync_->registerCallback(&SyncNode::publishSyncMessages, this);
         } else {
             exact_sync_ = std::make_shared<Synchronizer<ExactSyncPolicy>>(ExactSyncPolicy(queue_size), sub_image_, sub_pointcloud_);
-            exact_sync_->registerCallback([this](const Image::ConstSharedPtr &image_msg, const PointCloud2::ConstSharedPtr &pointcloud_msg) {
-                publishSyncMessages(image_msg, pointcloud_msg);
-            });
+            exact_sync_->registerCallback(&SyncNode::publishSyncMessages, this);
         }
 
         pub_image_sync_ = create_publisher<Image>(topic_image + "_sync", 10);
