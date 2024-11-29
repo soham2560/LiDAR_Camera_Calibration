@@ -11,9 +11,23 @@ LABEL org.opencontainers.image.licenses="MIT"
 # handle default shell
 SHELL ["/bin/bash", "-c"]
 
+USER root
+
+RUN apt-get update && apt-get install -y \
+    curl \
+    apt-transport-https \
+    lsb-release
+
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | tee /etc/apt/keyrings/librealsense.pgp > /dev/null
+    
+RUN echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/librealsense.list
+
 COPY rosPkgs.list /tmp/rosPkgs.list
-RUN sudo apt-get update \
-   && sudo apt-get -y install --no-install-recommends $(cat /tmp/rosPkgs.list) \
-   && sudo apt-get autoremove -y \
-   && sudo apt-get clean -y \
-   && sudo rm -rf /var/lib/apt/lists/*
+RUN apt-get update \
+   && apt-get -y install --no-install-recommends $(cat /tmp/rosPkgs.list) \
+   && apt-get autoremove -y \
+   && apt-get clean -y \
+   && rm -rf /var/lib/apt/lists/*
+
+USER container_user

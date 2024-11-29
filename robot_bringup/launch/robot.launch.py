@@ -50,6 +50,7 @@ def generate_launch_description():
 
     # Package Path
     package_path = get_package_share_directory('robot_bringup')
+    rs_package_path = get_package_share_directory('realsense2_camera')
 
     # set log output path
     get_current_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
@@ -59,45 +60,6 @@ def generate_launch_description():
     # Get URDF via xacro
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
-    )
-    camera_params = PathJoinSubstitution(
-        [package_path, 'config', 'usb_cam_params.yaml'])
-    
-    # Spawn Robot
-    gz_spawn_entity = Node(
-        package='ros_gz_sim',
-        executable='create',
-        namespace=namespace,
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_sim_time),
-        arguments=[
-            '-name', 'robot',
-            '-x', '0.0',
-            '-y', '0.0',
-            '-z', '0.0',
-            '-Y', '0.0',
-            '-topic', 'robot_description'],
-    )
-
-    # Gazebo Environment
-    gazebo = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('ros_gz_sim'),
-                              'launch', 'gz_sim.launch.py')]),
-            launch_arguments=[('gz_args', ['-r v 4 empty.sdf'])],
-            condition=IfCondition(use_sim_time))
-    
-    # Bridge
-    bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        namespace=namespace,
-        output='screen',
-        parameters=[
-            {'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_sim_time),
-        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock']
     )
 
     robot_state_pub_node = Node(
@@ -141,22 +103,19 @@ def generate_launch_description():
         condition=IfCondition(record),
     )
 
-    # velodyne_hw_if
     velodyne_hw_if = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 [os.path.join(get_package_share_directory('robot_bringup'),
                               'launch', 'velodyne_hw_if.launch.py')]),
             condition=UnlessCondition(use_sim_time))
 
-    camera_driver = Node(
-        package='usb_cam',
-        executable='usb_cam_node_exe',
-        name='usb_cam',
-        output='log',
-        namespace=namespace,
-        parameters=[camera_params],
-        on_exit=Shutdown(),
-        condition=UnlessCondition(use_sim_time)
+    camera_driver = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+                [os.path.join(rs_package_path,
+                              'launch/' 'rs_launch.py')]),
+        launch_arguments={
+            'use_sim_time': use_sim_time,
+        }.items()
     )
     sync_sensors = Node(
         package='sync_sensors',
@@ -164,17 +123,14 @@ def generate_launch_description():
         name='sync_sensors',
         output='screen',
         parameters=[
-            {'topic_image': '/image_raw'},
+            {'topic_image': '/camera/camera/color/image_raw'},
             {'topic_pointcloud': '/velodyne_points'},
-            {'queue_size': 10},
+            {'queue_size': 30},
             {'use_approximate_sync': True}
         ]
     )
 
     nodes = [
-        gz_spawn_entity,
-        gazebo,
-        bridge,
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,

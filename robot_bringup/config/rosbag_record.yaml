@@ -1,11 +1,17 @@
 # List of topics to record in a rosbag
 ---
 topics:
-  - /camera_info
+  - /camera/camera/color/camera_info
+  - /camera/camera/color/image_raw
+  - /camera/camera/color/image_raw_sync
+  - /clicked_point
   - /diagnostics
-  - /image_raw
-  - /image_raw_sync
+  - /goal_pose
+  - /initialpose
+  - /joint_states
+  - /parameter_events
   - /robot_description
+  - /rosout
   - /scan
   - /tf
   - /tf_static

@@ -13,7 +13,8 @@ find_package(rclcpp_components REQUIRED)
 find_package(robot_state_publisher REQUIRED)
 find_package(urdf REQUIRED)
 find_package(velodyne REQUIRED)
-find_package(usb_cam REQUIRED)
+find_package(realsense2_camera REQUIRED)
+find_package(realsense2_description REQUIRED)
 find_package(sync_sensors REQUIRED)
 
 install(
