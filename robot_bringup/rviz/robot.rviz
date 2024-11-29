@@ -4,9 +4,14 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
+        - /TF1/Tree1
+        - /TF1/Tree1/map1
+        - /TF1/Tree1/map1/camera_bottom_screw_frame1
+        - /TF1/Tree1/map1/camera_bottom_screw_frame1/camera_link1
+        - /TF1/Tree1/map1/camera_bottom_screw_frame1/camera_link1/camera_accel_frame1
         - /Image1/Topic1
       Splitter Ratio: 0.5
-    Tree Height: 164
+    Tree Height: 513
   - Class: rviz_common/Selection
     Name: Selection
   - Class: rviz_common/Tool Properties
@@ -96,7 +101,63 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
-        c270:
+        camera_accel_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_accel_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_bottom_screw_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_color_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_depth_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_gyro_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_gyro_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_imu_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_infra1_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_infra1_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_infra2_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_infra2_optical_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -138,9 +199,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 255
+      Max Intensity: 186
       Min Color: 0; 0; 0
-      Min Intensity: 1
+      Min Intensity: 0
       Name: PointCloud2
       Position Transformer: XYZ
       Selectable: true
@@ -162,8 +223,36 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        c270:
+        camera_accel_frame:
+          Value: false
+        camera_accel_optical_frame:
+          Value: false
+        camera_bottom_screw_frame:
+          Value: false
+        camera_color_frame:
           Value: true
+        camera_color_optical_frame:
+          Value: false
+        camera_depth_frame:
+          Value: false
+        camera_depth_optical_frame:
+          Value: false
+        camera_gyro_frame:
+          Value: false
+        camera_gyro_optical_frame:
+          Value: false
+        camera_imu_optical_frame:
+          Value: false
+        camera_infra1_frame:
+          Value: false
+        camera_infra1_optical_frame:
+          Value: false
+        camera_infra2_frame:
+          Value: false
+        camera_infra2_optical_frame:
+          Value: false
+        camera_link:
+          Value: false
         map:
           Value: true
         velodyne:
@@ -177,8 +266,27 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          c270:
-            {}
+          camera_bottom_screw_frame:
+            camera_link:
+              camera_accel_frame:
+                camera_accel_optical_frame:
+                  {}
+              camera_color_frame:
+                camera_color_optical_frame:
+                  {}
+              camera_depth_frame:
+                camera_depth_optical_frame:
+                  {}
+              camera_gyro_frame:
+                camera_gyro_optical_frame:
+                  camera_imu_optical_frame:
+                    {}
+              camera_infra1_frame:
+                camera_infra1_optical_frame:
+                  {}
+              camera_infra2_frame:
+                camera_infra2_optical_frame:
+                  {}
           velodyne_base_link:
             velodyne:
               {}
@@ -192,11 +300,11 @@ Visualization Manager:
       Name: Image
       Normalize Range: true
       Topic:
-        Depth: 5
+        Depth: 20
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /image_raw_sync
+        Value: /camera/camera/color/image_raw_sync
       Value: true
   Enabled: true
   Global Options:
@@ -259,10 +367,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.459796667098999
+      Pitch: 0.6797969341278076
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 1.237382173538208
+      Yaw: 4.230568885803223
     Saved:
       - Angle: 0
         Class: rviz_default_plugins/TopDownOrtho
@@ -287,7 +395,7 @@ Window Geometry:
   Hide Right Dock: false
   Image:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000040000000000000268000003a2fc0200000012fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b000000df000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000100044006900730070006c006100790073000000020f000001ce000000c700fffffffb0000000a0049006d0061006700650100000108000000890000000000000000fb000000100044006900730070006c006100790073000000003b000001ce000000c700fffffffb000000100044006900730070006c006100790073000000003b000002d1000000c700fffffffc00000110000002cd0000000000fffffffa000000000100000002fb0000000a0049006d0061006700650100000000ffffffff0000000000000000fb000000100044006900730070006c0061007900730000000000000001560000015600fffffffb0000000a0049006d006100670065010000016f0000026e0000000000000000fb0000000a0049006d006100670065010000015d000002800000000000000000fb0000000a0049006d00610067006501000001700000026d0000000000000000fb000000100044006900730070006c006100790073000000020f000001ce000000c700fffffffb0000000a0049006d0061006700650100000120000002bd0000002800ffffff0000000100000110000003a2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b000003a2000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000004cc000003a200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000268000003a2fc0200000012fb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000a3fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003b0000023c000000c700fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb000000100044006900730070006c006100790073000000020f000001ce000000c700fffffffb0000000a0049006d006100670065010000027d000001600000002800fffffffb000000100044006900730070006c006100790073000000003b000001ce000000c700fffffffb000000100044006900730070006c006100790073000000003b000002d1000000c700fffffffc00000110000002cd0000000000fffffffa000000000100000002fb0000000a0049006d0061006700650100000000ffffffff0000000000000000fb000000100044006900730070006c0061007900730000000000000001560000015600fffffffb0000000a0049006d006100670065010000016f0000026e0000000000000000fb0000000a0049006d006100670065010000015d000002800000000000000000fb0000000a0049006d00610067006501000001700000026d0000000000000000fb000000100044006900730070006c006100790073000000020f000001ce000000c700fffffffb0000000a0049006d0061006700650100000120000002bd00000000000000000000000100000110000003a2fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000003b000003a2000000a000fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000004420000003efc0100000002fb0000000800540069006d00650100000000000004420000000000000000fb0000000800540069006d00650100000000000004500000000000000000000004cc000003a200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Tool Properties:

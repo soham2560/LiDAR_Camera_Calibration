@@ -15,8 +15,8 @@
     <link name="map"/>
 
     <!-- CAMERA -->
-    <xacro:sensor_d455 parent="map" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" name="camera">
-      <origin xyz="0 0.5 0" rpy="0 0 y"/>
+    <xacro:sensor_d455 parent="map" use_nominal_extrinsics="True" name="camera">
+      <origin xyz="0 0.5 0" rpy="0 0 0"/>
     </xacro:sensor_d455>
 
     <!-- LIDAR -->

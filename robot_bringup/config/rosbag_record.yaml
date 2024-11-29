@@ -1,14 +1,4 @@
 # List of topics to record in a rosbag
 ---
 topics:
-  - /camera_info
-  - /diagnostics
-  - /image_raw
-  - /image_raw_sync
-  - /robot_description
-  - /scan
-  - /tf
-  - /tf_static
-  - /velodyne_packets
-  - /velodyne_points
-  - /velodyne_points_sync
+  --all
