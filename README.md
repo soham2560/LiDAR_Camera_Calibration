@@ -14,14 +14,16 @@ ROS2 Setup to perform LiDAR-Camera Calibration for Mobile Robotics Course (CS7.5
 
 ## Hardware Setup
 The repository has currently been setup with
-- RGB Camera: Logitech C270
+- RGB Camera: Realsense D455
+  - No Additional Setup is required for this
+- 3D LiDAR: Velodyne VLP16
+  - LiDAR IP: 172.16.101.71
+  - Host IP: 172.16.101.77
+- RGB Camera(Deprecated): Logitech C270
   - Setup UDEV Rules by running the `c270.sh` script in the `scripts` folder on **HOST**, and not in container
     ```bash
     sudo bash <path to script>/c270.sh
     ```
-- 3D LiDAR: Velodyne VLP16
-  - LiDAR IP: 172.16.101.71
-  - Host IP: 172.16.101.77
 
 ## Docker Setup
 - To pull latest docker image
