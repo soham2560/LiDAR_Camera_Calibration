@@ -60,45 +60,6 @@ def generate_launch_description():
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
-    camera_params = PathJoinSubstitution(
-        [package_path, 'config', 'usb_cam_params.yaml'])
-    
-    # Spawn Robot
-    gz_spawn_entity = Node(
-        package='ros_gz_sim',
-        executable='create',
-        namespace=namespace,
-        output='screen',
-        parameters=[{'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_sim_time),
-        arguments=[
-            '-name', 'robot',
-            '-x', '0.0',
-            '-y', '0.0',
-            '-z', '0.0',
-            '-Y', '0.0',
-            '-topic', 'robot_description'],
-    )
-
-    # Gazebo Environment
-    gazebo = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('ros_gz_sim'),
-                              'launch', 'gz_sim.launch.py')]),
-            launch_arguments=[('gz_args', ['-r v 4 empty.sdf'])],
-            condition=IfCondition(use_sim_time))
-    
-    # Bridge
-    bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        namespace=namespace,
-        output='screen',
-        parameters=[
-            {'use_sim_time': use_sim_time}],
-        condition=IfCondition(use_sim_time),
-        arguments=['/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock']
-    )
 
     robot_state_pub_node = Node(
         package='robot_state_publisher',
