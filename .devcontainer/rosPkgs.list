@@ -7,3 +7,5 @@ libpcap0.8-dev
 iproute2
 can-utils
 net-tools
+ros-humble-realsense2-*
+ros-humble-librealsense2-*
