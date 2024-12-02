@@ -13,10 +13,10 @@ from yaml import safe_load
 
 def generate_launch_description():
     # Get path to package
-    robot_bringup_dir = get_package_share_directory('robot_bringup')
+    lidar_camera_calibration_dir = get_package_share_directory('lidar_camera_calibration')
 
     # Get path to config file
-    config_dir = os.path.join(robot_bringup_dir, 'config')
+    config_dir = os.path.join(lidar_camera_calibration_dir, 'config')
     rosbag_record_yaml = os.path.join(config_dir, 'rosbag_record.yaml')
     topics_for_recording = safe_load(open(rosbag_record_yaml, 'r'))['topics']
 

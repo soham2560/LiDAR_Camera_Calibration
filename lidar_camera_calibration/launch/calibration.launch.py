@@ -49,7 +49,7 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz')
 
     # Package Path
-    package_path = get_package_share_directory('robot_bringup')
+    package_path = get_package_share_directory('lidar_camera_calibration')
     rs_package_path = get_package_share_directory('realsense2_camera')
 
     # set log output path
@@ -105,7 +105,7 @@ def generate_launch_description():
 
     velodyne_hw_if = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('robot_bringup'),
+                [os.path.join(get_package_share_directory('lidar_camera_calibration'),
                               'launch', 'velodyne_hw_if.launch.py')]),
             condition=UnlessCondition(use_sim_time))
 
