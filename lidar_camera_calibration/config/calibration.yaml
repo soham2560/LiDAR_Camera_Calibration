@@ -1,0 +1,7 @@
+calibration:
+    ros__parameters:
+      correspondence_path: "/ros2_ws/src/lidar_camera_calibration/data/correspondences.txt"
+      k_matrix_path: "/ros2_ws/src/lidar_camera_calibration/data/intrinsics.txt"
+      dist_coeffs_path: "/ros2_ws/src/lidar_camera_calibration/data/dist_coeffs.txt"
+      camera_frame: "camera_bottom_screw_frame"
+      lidar_frame: "velodyne"
