@@ -118,7 +118,7 @@ def generate_launch_description():
         }.items()
     )
     sync_sensors = Node(
-        package='sync_sensors',
+        package='lidar_camera_calibration',
         executable='sync_sensors',
         name='sync_sensors',
         output='screen',

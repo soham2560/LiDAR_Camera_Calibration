@@ -15,8 +15,16 @@ find_package(urdf REQUIRED)
 find_package(velodyne REQUIRED)
 find_package(realsense2_camera REQUIRED)
 find_package(realsense2_description REQUIRED)
-find_package(sync_sensors REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(message_filters REQUIRED)
 
+add_executable(sync_sensors src/sync_sensors.cpp)
+ament_target_dependencies(sync_sensors rclcpp sensor_msgs message_filters)
+
+install(TARGETS
+  sync_sensors
+  DESTINATION lib/${PROJECT_NAME})
+  
 install(
   DIRECTORY config launch urdf meshes rviz config
   DESTINATION share/${PROJECT_NAME}
