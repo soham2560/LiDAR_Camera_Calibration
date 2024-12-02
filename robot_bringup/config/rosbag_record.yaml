@@ -2,7 +2,6 @@
 ---
 topics:
   - /camera/camera/color/camera_info
-  - /camera/camera/color/image_raw
   - /camera/camera/color/image_raw_sync
   - /clicked_point
   - /diagnostics
@@ -15,6 +14,4 @@ topics:
   - /scan
   - /tf
   - /tf_static
-  - /velodyne_packets
-  - /velodyne_points
   - /velodyne_points_sync
