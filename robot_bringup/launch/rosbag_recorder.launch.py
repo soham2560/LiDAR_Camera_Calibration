@@ -47,13 +47,13 @@ def generate_launch_description():
     if topics_for_recording:
         for topic in topics_for_recording:
             rosbag_cmd.append(topic)
-    rosbag_cmd.extend(['-o', rosbag_storage_dir, '-s', 'mcap'])
+    rosbag_cmd.extend(['-o', rosbag_storage_dir, '-s', 'sqlite3'])
     start_rosbag_yaml = ExecuteProcess(
         cmd=rosbag_cmd,
         output='screen'
     )
 
     ld = LaunchDescription()
-    ld.add_action(rosbag_storage_dir_arg)
+    ld.add_action(rosbag_storage_dir_arg)   
     ld.add_action(start_rosbag_yaml)
     return ld
