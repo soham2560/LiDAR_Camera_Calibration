@@ -423,6 +423,40 @@ private:
             return transform_stamped;
         }
 
+    void SaveCalibrationData(const std::string& output_file) {
+        std::ofstream file(output_file);
+        if (!file.is_open()) {
+            RCLCPP_ERROR(get_logger(), "Failed to open file: %s", output_file.c_str());
+            return;
+        }
+
+        file << "LiDAR Sensor to Camera Sensor Transformation Matrix:\n";
+        for (int i = 0; i < 4; ++i) {
+            for (int j = 0; j < 4; ++j) {
+                file << calibration_data_.T_lidar_sensor_to_camera_sensor(i, j) << " ";
+            }
+            file << "\n";
+        }
+
+        file << "\nCamera Matrix (K):\n";
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                file << calibration_data_.K.at<double>(i, j) << " ";
+            }
+            file << "\n";
+        }
+
+        file << "\nDistortion Coefficients:\n";
+        for (int i = 0; i < 5; ++i) {
+            file << calibration_data_.dist_coeffs.at<double>(0, i) << " ";
+        }
+        file << "\n";
+
+        file.close();
+        RCLCPP_INFO(get_logger(), "Calibration data saved to: %s", output_file.c_str());
+    }
+
+
 public:
     LiDARCameraCalibration() : Node("lidar_camera_calibration"), 
                                 tf_buffer_(get_clock()), 
@@ -432,6 +466,7 @@ public:
         auto correspondence_path = declare_parameter<std::string>("correspondence_path");
         auto k_matrix_path = declare_parameter<std::string>("k_matrix_path");
         auto dist_coeffs_path = declare_parameter<std::string>("dist_coeffs_path");
+        auto output_path = declare_parameter<std::string>("output_path");
         
         calibration_data_.camera_base_frame = declare_parameter<std::string>("camera_base_frame");
         calibration_data_.camera_sensor_frame = declare_parameter<std::string>("camera_sensor_frame");
@@ -448,6 +483,7 @@ public:
         LoadDistortionCoefficients(dist_coeffs_path);
         PerformCalibration();
         PublishTransform();
+        SaveCalibrationData(output_path);
 
         RCLCPP_INFO(get_logger(), "Node initialization complete");
     }
