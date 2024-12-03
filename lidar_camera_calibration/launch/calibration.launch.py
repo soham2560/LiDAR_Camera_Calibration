@@ -49,13 +49,16 @@ def generate_launch_description():
     use_rviz = LaunchConfiguration('use_rviz')
 
     # Package Path
-    package_path = get_package_share_directory('robot_bringup')
+    package_path = get_package_share_directory('lidar_camera_calibration')
     rs_package_path = get_package_share_directory('realsense2_camera')
 
     # set log output path
     get_current_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     log_full_path = os.path.join('/ros2_ws/src/records/', get_current_timestamp)
     rosbag_full_path = os.path.join(log_full_path, 'rosbag')
+
+    config_dir = os.path.join(package_path, 'config')
+    calibrate_config_path = os.path.join(config_dir, 'calibration.yaml')
 
     # Get URDF via xacro
     xacro_path = PathJoinSubstitution(
@@ -105,7 +108,7 @@ def generate_launch_description():
 
     velodyne_hw_if = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
-                [os.path.join(get_package_share_directory('robot_bringup'),
+                [os.path.join(get_package_share_directory('lidar_camera_calibration'),
                               'launch', 'velodyne_hw_if.launch.py')]),
             condition=UnlessCondition(use_sim_time))
 
@@ -118,7 +121,7 @@ def generate_launch_description():
         }.items()
     )
     sync_sensors = Node(
-        package='sync_sensors',
+        package='lidar_camera_calibration',
         executable='sync_sensors',
         name='sync_sensors',
         output='screen',
@@ -129,14 +132,22 @@ def generate_launch_description():
             {'use_approximate_sync': True}
         ]
     )
+    calibration_node = Node(
+        package='lidar_camera_calibration',
+        executable='calibration',
+        name='calibration',
+        output='screen',
+        parameters=[calibrate_config_path]
+    )
 
     nodes = [
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
-        sync_sensors,
-        velodyne_hw_if,
-        camera_driver
+        calibration_node
+        # sync_sensors,
+        # velodyne_hw_if,
+        # camera_driver
     ]
 
     return LaunchDescription(declared_arguments + nodes)

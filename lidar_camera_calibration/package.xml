@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>robot_bringup</name>
+  <name>lidar_camera_calibration</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <maintainer email="sohampatil45939@gmail.com">Soham</maintainer>
@@ -15,7 +15,22 @@
   <exec_depend>xacro</exec_depend>
   <exec_depend>velodyne</exec_depend>
   <exec_depend>realsense2_camera</exec_depend>
-  <exec_depend>sync_sensors</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>message_filters</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+
+  <build_depend>opencv</build_depend>
+  <build_depend>eigen</build_depend>
+  <build_depend>ceres-solver</build_depend>
+
+  <build_export_depend>opencv</build_export_depend>
+  <build_export_depend>eigen</build_export_depend>
+  <build_export_depend>ceres-solver</build_export_depend>
+
+  <exec_depend>opencv</exec_depend>
+  <exec_depend>eigen</exec_depend>
+  <exec_depend>ceres-solver</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

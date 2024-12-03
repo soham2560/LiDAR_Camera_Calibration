@@ -41,7 +41,7 @@ from launch_ros.descriptions import ComposableNode
 
 
 def generate_launch_description():
-    share_dir = ament_index_python.packages.get_package_share_directory('robot_bringup')
+    share_dir = ament_index_python.packages.get_package_share_directory('lidar_camera_calibration')
     params_file = os.path.join(share_dir, 'config', 'velodyne.yaml')
     with open(params_file, 'r') as f:
         config = yaml.safe_load(f) or {}

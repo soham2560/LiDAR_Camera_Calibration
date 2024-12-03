@@ -28,7 +28,7 @@ The repository has currently been setup with
 ## Docker Setup
 - To pull latest docker image
     ```bash
-    docker pull ghcr.io/soham2560/humble-garden:latest
+    docker pull ghcr.io/soham2560/humble-lidar-cam:latest
     ```
 - To start container
     - Open Command Pallete with `Ctrl+Shift+P`
@@ -43,7 +43,7 @@ The repository has currently been setup with
 - Ensure Hardware is setup properly and powered on
 - Use following command to launch
   ```bash
-  ros2 launch robot_bringup robot.launch.py use_rviz:=True
+  ros2 launch lidar_camera_calibration calibration.launch.py use_rviz:=True
   ```
 
 Note: The README's in this repository are inspired by [this](https://github.com/TheProjectsGuy/MR21-CS7.503) and [this](https://github.com/ankitdhall/lidar_camera_calibration)

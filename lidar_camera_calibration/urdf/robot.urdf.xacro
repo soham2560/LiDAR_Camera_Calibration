@@ -14,11 +14,6 @@
     <!-- MAP -->
     <link name="map"/>
 
-    <!-- CAMERA -->
-    <xacro:sensor_d455 parent="map" use_nominal_extrinsics="True" name="camera">
-      <origin xyz="0 0.5 0" rpy="0 0 0"/>
-    </xacro:sensor_d455>
-
     <!-- LIDAR -->
     <joint name="velodyne_base_mount_joint" type="fixed">
         <origin xyz="0.5 0 0" rpy="0 0 0" />
@@ -34,12 +29,12 @@
       </inertial>
       <visual>
         <geometry>
-          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_base_1.dae"/>
+          <mesh filename="file://$(find lidar_camera_calibration)/meshes/VLP16/VLP16_base_1.dae"/>
         </geometry>
       </visual>
       <visual>
         <geometry>
-          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_base_2.dae"/>
+          <mesh filename="file://$(find lidar_camera_calibration)/meshes/VLP16/VLP16_base_2.dae"/>
         </geometry>
       </visual>
       <collision>
@@ -65,9 +60,14 @@
       <visual>
         <origin xyz="0 0 -0.0377"/>
         <geometry>
-          <mesh filename="file://$(find robot_bringup)/meshes/VLP16/VLP16_scan.dae"/>
+          <mesh filename="file://$(find lidar_camera_calibration)/meshes/VLP16/VLP16_scan.dae"/>
         </geometry>
       </visual>
     </link>
+
+    <!-- CAMERA -->
+    <xacro:sensor_d455 parent="velodyne_base_link" use_nominal_extrinsics="True" name="camera">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </xacro:sensor_d455>
 
 </robot>
