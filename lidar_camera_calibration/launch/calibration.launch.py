@@ -4,7 +4,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution, AndSubstitution, NotSubstitution
@@ -132,22 +132,27 @@ def generate_launch_description():
             {'use_approximate_sync': True}
         ]
     )
-    calibration_node = Node(
-        package='lidar_camera_calibration',
-        executable='calibration',
-        name='calibration',
-        output='screen',
-        parameters=[calibrate_config_path]
+    calibration_node = TimerAction(
+        period=5.0,
+        actions=[
+            Node(
+                package='lidar_camera_calibration',
+                executable='calibration',
+                name='calibration',
+                output='screen',
+                parameters=[calibrate_config_path]
+            )
+        ]
     )
 
     nodes = [
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
-        calibration_node
-        # sync_sensors,
-        # velodyne_hw_if,
-        # camera_driver
+        calibration_node,
+        sync_sensors,
+        velodyne_hw_if,
+        camera_driver
     ]
 
     return LaunchDescription(declared_arguments + nodes)
