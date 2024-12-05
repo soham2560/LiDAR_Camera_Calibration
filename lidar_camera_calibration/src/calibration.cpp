@@ -173,9 +173,9 @@ private:
 
         RCLCPP_INFO(get_logger(), "Publishing calibration transforms");
         Eigen::Matrix4d T_lidar_base_to_camera_base = 
-            T_lidar_base_to_sensor.inverse() * 
-            T_lidar_sensor_to_camera_sensor * 
-            T_camera_base_to_sensor;
+            T_lidar_base_to_sensor * 
+            T_lidar_sensor_to_camera_sensor.inverse() * 
+            T_camera_base_to_sensor.inverse();
         
         RCLCPP_DEBUG(get_logger(), "Final LiDAR Base to Camera Base Transform:\n%s", 
                     MatrixToString(T_lidar_base_to_camera_base).c_str());
@@ -312,12 +312,12 @@ private:
             double X = points3D[i].x;
             double Y = points3D[i].y;
             double Z = points3D[i].z;
-            
+
             double fx = cameraMatrix.at<double>(0, 0);
             double fy = cameraMatrix.at<double>(1, 1);
             double cx = cameraMatrix.at<double>(0, 2);
             double cy = cameraMatrix.at<double>(1, 2);
-
+            
             double x = (points2D[i].x - cx) / fx;
             double y = (points2D[i].y - cy) / fy;
 
@@ -336,24 +336,24 @@ private:
 
         Eigen::Matrix3d R;
         Eigen::Vector3d t;
-        
+
         Eigen::MatrixXd P_block = P.block<3,3>(0,0);
         Eigen::JacobiSVD<Eigen::MatrixXd> P_svd(P_block, Eigen::ComputeFullU | Eigen::ComputeFullV);
-        
+
         R = P_svd.matrixU() * P_svd.matrixV().transpose();
-        
+
         if (R.determinant() < 0) {
             R = -R;
         }
 
         Eigen::Vector3d singular_values = P_svd.singularValues();
         double scale = (singular_values(0) + singular_values(1)) / 2.0;
-        
+
         t = P.block<3,1>(0,3) / scale;
         t = -R.transpose() * t;
 
         cv::Mat R_cv = cv::Mat(3, 3, CV_64F);
-        
+
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 R_cv.at<double>(i, j) = R(i, j);
@@ -407,11 +407,12 @@ private:
                 tvec_data,
                 intrinsics
             );
+            problem.SetParameterBlockConstant(intrinsics);
         }
 
         ceres::Solver::Options options;
         options.linear_solver_type = ceres::DENSE_SCHUR;
-        options.max_num_iterations = 200;
+        options.max_num_iterations = 2000;
         
         ceres::Solver::Summary summary;
         ceres::Solve(options, &problem, &summary);
@@ -431,6 +432,10 @@ private:
             axis_angle[i] = rvex[i];
             translation[i] = tvec_data[i];
         }
+        cameraMatrix.at<double>(0, 0) = intrinsics[0];  // fx
+        cameraMatrix.at<double>(1, 1) = intrinsics[1];  // fy
+        cameraMatrix.at<double>(0, 2) = intrinsics[2];  // cx
+        cameraMatrix.at<double>(1, 2) = intrinsics[3];  // cy
 
         computeReprojectionError();
     }
@@ -446,22 +451,7 @@ private:
             total_error += err;
         }
         double mean_reprojection_error = total_error / points3D.size();
-
-        // Create a string representation of the rotation and translation vectors
-        std::stringstream rvec_ss, tvec_ss;
-        rvec_ss << "[" 
-                << rvec.at<double>(0, 0) << ", " 
-                << rvec.at<double>(1, 0) << ", " 
-                << rvec.at<double>(2, 0) << "]";
-
-        tvec_ss << "[" 
-                << tvec.at<double>(0, 0) << ", " 
-                << tvec.at<double>(1, 0) << ", " 
-                << tvec.at<double>(2, 0) << "]";
-
         RCLCPP_INFO(get_logger(), "Mean Reprojection Error: %f pixels", mean_reprojection_error);
-        RCLCPP_INFO(get_logger(), "Refined Rotation Vector: %s", rvec_ss.str().c_str());
-        RCLCPP_INFO(get_logger(), "Refined Translation Vector: %s", tvec_ss.str().c_str());
     }
 
 public:
