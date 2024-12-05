@@ -95,15 +95,20 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
     )
 
-    rosbag_recorder_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [package_path, '/launch/rosbag_recorder.launch.py']
-        ),
-        launch_arguments={
-            'use_sim_time': use_sim_time,
-            'rosbag_storage_dir': rosbag_full_path,
-        }.items(),
-        condition=IfCondition(record),
+    rosbag_recorder_launch = TimerAction(
+        period=5.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    [package_path, '/launch/rosbag_recorder.launch.py']
+                ),
+                launch_arguments={
+                    'use_sim_time': use_sim_time,
+                    'rosbag_storage_dir': rosbag_full_path,
+                }.items(),
+                condition=IfCondition(record),
+            )
+        ]
     )
 
     velodyne_hw_if = IncludeLaunchDescription(
@@ -132,18 +137,13 @@ def generate_launch_description():
             {'use_approximate_sync': True}
         ]
     )
-    calibration_node = TimerAction(
-        period=5.0,
-        actions=[
-            Node(
+    calibration_node = Node(
                 package='lidar_camera_calibration',
                 executable='calibration',
                 name='calibration',
                 output='screen',
                 parameters=[calibrate_config_path]
             )
-        ]
-    )
 
     nodes = [
         robot_state_pub_node,
