@@ -7,7 +7,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution, AndSubstitution, NotSubstitution
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.actions import Node
@@ -16,13 +16,7 @@ from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
-    # Declare arguments
     declared_arguments = []
-    declared_arguments.append(
-        DeclareLaunchArgument(
-            'use_sim_time',
-            default_value='False',
-            description='Launch in simulation mode.'))
     declared_arguments.append(
         DeclareLaunchArgument(
             'namespace',
@@ -39,28 +33,30 @@ def generate_launch_description():
             default_value='False',
             description='Launch RVIZ on startup'))
     declared_arguments.append(
+        DeclareLaunchArgument(
+            'enable_hardware',
+            default_value='False',
+            description='Enable hardware drivers'))
+    declared_arguments.append(
         SetEnvironmentVariable(
             'RCUTILS_COLORIZED_OUTPUT', '1'))
 
-    # Initialize Arguments
-    use_sim_time = LaunchConfiguration('use_sim_time')
     namespace = LaunchConfiguration('namespace')
     record = LaunchConfiguration('record')
     use_rviz = LaunchConfiguration('use_rviz')
+    enable_hardware = LaunchConfiguration('enable_hardware')
 
-    # Package Path
     package_path = get_package_share_directory('lidar_camera_calibration')
     rs_package_path = get_package_share_directory('realsense2_camera')
 
-    # set log output path
     get_current_timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     log_full_path = os.path.join('/ros2_ws/src/records/', get_current_timestamp)
     rosbag_full_path = os.path.join(log_full_path, 'rosbag')
 
     config_dir = os.path.join(package_path, 'config')
     calibrate_config_path = os.path.join(config_dir, 'calibration.yaml')
+    zhangs_config_path = os.path.join(config_dir, 'zhangs.yaml')
 
-    # Get URDF via xacro
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
@@ -73,11 +69,9 @@ def generate_launch_description():
         namespace=namespace,
         parameters=[
             {
-                'use_sim_time': use_sim_time,
                 'frame_prefix': [namespace, '/'],
                 'robot_description': ParameterValue(
                     Command(['xacro ', xacro_path, ' ',
-                            'USE_WITH_SIM:=', use_sim_time, ' ',
                             'NAMESPACE:=', namespace, ' ']), value_type=str),
             }
         ]
@@ -89,7 +83,6 @@ def generate_launch_description():
         name='rviz2',
         output='log',
         namespace=namespace,
-        parameters=[{'use_sim_time': use_sim_time}],
         arguments=['-d', package_path + '/rviz/robot.rviz'],
         on_exit=Shutdown(),
         condition=IfCondition(use_rviz),
@@ -103,7 +96,6 @@ def generate_launch_description():
                     [package_path, '/launch/rosbag_recorder.launch.py']
                 ),
                 launch_arguments={
-                    'use_sim_time': use_sim_time,
                     'rosbag_storage_dir': rosbag_full_path,
                 }.items(),
                 condition=IfCondition(record),
@@ -115,16 +107,18 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(
                 [os.path.join(get_package_share_directory('lidar_camera_calibration'),
                               'launch', 'velodyne_hw_if.launch.py')]),
-            condition=UnlessCondition(use_sim_time))
+            condition=IfCondition(enable_hardware))
 
     camera_driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
                 [os.path.join(rs_package_path,
                               'launch/' 'rs_launch.py')]),
         launch_arguments={
-            'use_sim_time': use_sim_time,
-        }.items()
+            'enable_hardware': enable_hardware,
+        }.items(),
+        condition=IfCondition(enable_hardware)
     )
+
     sync_sensors = Node(
         package='lidar_camera_calibration',
         executable='sync_sensors',
@@ -135,21 +129,38 @@ def generate_launch_description():
             {'topic_pointcloud': '/velodyne_points'},
             {'queue_size': 30},
             {'use_approximate_sync': True}
-        ]
+        ],
+        condition=IfCondition(enable_hardware)
     )
-    calibration_node = Node(
-                package='lidar_camera_calibration',
-                executable='calibration',
-                name='calibration',
-                output='screen',
-                parameters=[calibrate_config_path]
-            )
+
+    zhangs_node = Node(
+        package='lidar_camera_calibration',
+        executable='zhangs',
+        name='zhang_calibration',
+        output='screen',
+        parameters=[zhangs_config_path]
+    )
+    calibration_node = RegisterEventHandler(
+        OnProcessExit(
+            target_action=zhangs_node,
+            on_exit=[
+                Node(
+                    package='lidar_camera_calibration',
+                    executable='calibration',
+                    name='calibration',
+                    output='screen',
+                    parameters=[calibrate_config_path]
+                )
+            ]
+        )
+    )
 
     nodes = [
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
         calibration_node,
+        zhangs_node,
         sync_sensors,
         velodyne_hw_if,
         camera_driver

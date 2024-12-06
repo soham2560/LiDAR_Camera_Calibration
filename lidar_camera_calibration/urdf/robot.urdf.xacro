@@ -5,7 +5,6 @@
     <xacro:include filename="$(find realsense2_description)/urdf/_d455.urdf.xacro" />
 
     <!-- ARGS -->
-    <xacro:arg name="USE_WITH_SIM" default="false" />
     <xacro:arg name="NAMESPACE" default="" />
 
     <!-- PROPERTIES -->
