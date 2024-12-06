@@ -56,6 +56,7 @@ def generate_launch_description():
     config_dir = os.path.join(package_path, 'config')
     calibrate_config_path = os.path.join(config_dir, 'calibration.yaml')
     zhangs_config_path = os.path.join(config_dir, 'zhangs.yaml')
+    realsense_config_path = os.path.join(config_dir, 'realsense.yaml')
 
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
@@ -112,9 +113,11 @@ def generate_launch_description():
     camera_driver = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
                 [os.path.join(rs_package_path,
-                              'launch/' 'rs_launch.py')]),
+                              'examples','launch_params_from_file', 'rs_launch_get_params_from_yaml.py')]),
         launch_arguments={
-            'enable_hardware': enable_hardware,
+            'camera_name': "camera",
+            'camera_namespace': "camera",
+            'config_file': realsense_config_path
         }.items(),
         condition=IfCondition(enable_hardware)
     )
