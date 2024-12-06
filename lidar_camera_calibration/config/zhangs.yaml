@@ -1,0 +1,7 @@
+zhang_calibration:
+  ros__parameters:
+    input_folder: "/ros2_ws/src/lidar_camera_calibration/data/checkerboard_images"
+    output_file: "/ros2_ws/src/lidar_camera_calibration/data/zhangs_intrinsics.txt"
+    square_size: 0.0835
+    pattern_width: 8
+    pattern_height: 6

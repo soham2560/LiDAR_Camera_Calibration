@@ -34,6 +34,16 @@ install(TARGETS
   sync_sensors
   DESTINATION lib/${PROJECT_NAME})
 
+add_executable(zhangs src/zhangs.cpp)
+ament_target_dependencies(zhangs rclcpp sensor_msgs OpenCV)
+
+target_include_directories(zhangs PUBLIC ${OpenCV_INCLUDE_DIRS})
+target_link_libraries(zhangs ${OpenCV_LIBRARIES})
+
+install(TARGETS
+  zhangs
+  DESTINATION lib/${PROJECT_NAME})
+
 add_executable(calibration src/calibration.cpp)
 
 target_include_directories(calibration PUBLIC
