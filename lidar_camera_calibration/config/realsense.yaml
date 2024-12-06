@@ -1,0 +1,7 @@
+enable_color: true
+rgb_camera.color_profile: 1280x720x15
+enable_depth: false
+align_depth.enable: false
+enable_sync: false
+publish_tf: false
+tf_publish_rate: 1.0
