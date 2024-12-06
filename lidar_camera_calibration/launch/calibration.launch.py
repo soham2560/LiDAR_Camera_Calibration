@@ -4,7 +4,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution, AndSubstitution, NotSubstitution
@@ -95,15 +95,20 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
     )
 
-    rosbag_recorder_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [package_path, '/launch/rosbag_recorder.launch.py']
-        ),
-        launch_arguments={
-            'use_sim_time': use_sim_time,
-            'rosbag_storage_dir': rosbag_full_path,
-        }.items(),
-        condition=IfCondition(record),
+    rosbag_recorder_launch = TimerAction(
+        period=5.0,
+        actions=[
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    [package_path, '/launch/rosbag_recorder.launch.py']
+                ),
+                launch_arguments={
+                    'use_sim_time': use_sim_time,
+                    'rosbag_storage_dir': rosbag_full_path,
+                }.items(),
+                condition=IfCondition(record),
+            )
+        ]
     )
 
     velodyne_hw_if = IncludeLaunchDescription(
@@ -133,21 +138,21 @@ def generate_launch_description():
         ]
     )
     calibration_node = Node(
-        package='lidar_camera_calibration',
-        executable='calibration',
-        name='calibration',
-        output='screen',
-        parameters=[calibrate_config_path]
-    )
+                package='lidar_camera_calibration',
+                executable='calibration',
+                name='calibration',
+                output='screen',
+                parameters=[calibrate_config_path]
+            )
 
     nodes = [
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
-        calibration_node
-        # sync_sensors,
-        # velodyne_hw_if,
-        # camera_driver
+        calibration_node,
+        sync_sensors,
+        velodyne_hw_if,
+        camera_driver
     ]
 
     return LaunchDescription(declared_arguments + nodes)
