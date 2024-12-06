@@ -36,7 +36,6 @@ private:
     tf2_ros::TransformListener tf_listener_;
     rclcpp::TimerBase::SharedPtr transform_timer_;
     
-    // Intermediate storage for optimization results
     double rvex[3] = {0, 0, 0};
     double tvec_data[3] = {0, 0, 0};
     double* translation = tvec_data;
@@ -407,7 +406,6 @@ private:
                 tvec_data,
                 intrinsics
             );
-            problem.SetParameterBlockConstant(intrinsics);
         }
 
         ceres::Solver::Options options;
@@ -432,10 +430,15 @@ private:
             axis_angle[i] = rvex[i];
             translation[i] = tvec_data[i];
         }
-        cameraMatrix.at<double>(0, 0) = intrinsics[0];  // fx
-        cameraMatrix.at<double>(1, 1) = intrinsics[1];  // fy
-        cameraMatrix.at<double>(0, 2) = intrinsics[2];  // cx
-        cameraMatrix.at<double>(1, 2) = intrinsics[3];  // cy
+        cameraMatrix.at<double>(0, 0) = intrinsics[0];
+        cameraMatrix.at<double>(1, 1) = intrinsics[1];
+        cameraMatrix.at<double>(0, 2) = intrinsics[2];
+        cameraMatrix.at<double>(1, 2) = intrinsics[3];
+
+        RCLCPP_INFO(get_logger(), "Camera Intrinsics Matrix:");
+        RCLCPP_INFO(get_logger(), "[%f, 0, %f]", cameraMatrix.at<double>(0, 0), cameraMatrix.at<double>(0, 2));
+        RCLCPP_INFO(get_logger(), "[0, %f, %f]", cameraMatrix.at<double>(1, 1), cameraMatrix.at<double>(1, 2));
+        RCLCPP_INFO(get_logger(), "[0, 0, 1]");
 
         computeReprojectionError();
     }
