@@ -7,3 +7,7 @@ calibration:
       camera_sensor_frame: "camera_color_optical_frame"
       lidar_base_frame: "velodyne_base_link"
       lidar_sensor_frame: "velodyne"
+      use_ransac: true
+      ransac_iterations: 1000
+      ransac_reprojection_error: 7.5
+      ransac_confidence: 0.99
