@@ -18,6 +18,11 @@
 
 class LiDARCameraCalibration : public rclcpp::Node {
 private:
+
+    bool use_ransac;
+    int ransac_iterations;
+    double ransac_reprojection_error;
+    double ransac_confidence;
     cv::Mat tvec = cv::Mat::zeros(3, 1, CV_64F);
     cv::Mat rvec = cv::Mat::zeros(3, 1, CV_64F);
     cv::Mat cameraMatrix;
@@ -48,13 +53,13 @@ private:
             RCLCPP_ERROR(get_logger(), "Failed to open correspondence file: %s", path.c_str());
             return;
         }
-
+        
         double px, py, X, Y, Z;
         while (file >> px >> py >> X >> Y >> Z) {
             points2D.emplace_back(px, py);
             points3D.emplace_back(X, Y, Z);
         }
-
+        
         RCLCPP_INFO(get_logger(), "Loaded %zu point correspondences", points2D.size());
     }
 
@@ -256,14 +261,54 @@ private:
         cv::Point3f point_;
     };
 
-    void PerformCalibration()
+    void ApplyRANSAC()
     {
-        if (points3D.empty() || points2D.empty()) {
-            RCLCPP_WARN(get_logger(), "No correspondence points available for calibration");
+        cv::Mat rvec_initial = rvec;
+        cv::Mat tvec_initial = tvec;
+        cv::Mat inliers;
+
+        std::vector<cv::Point2f> temp_points2D = points2D;
+        std::vector<cv::Point3f> temp_points3D = points3D;
+
+        try {
+            if (use_ransac) {
+                RCLCPP_INFO(get_logger(), "Using RANSAC with %d iterations, reprojection error %.2f, confidence %.2f",
+                            ransac_iterations, ransac_reprojection_error, ransac_confidence);
+                
+                cv::solvePnPRansac(temp_points3D, temp_points2D, cameraMatrix, cv::Mat(),
+                                rvec_initial, tvec_initial, false, ransac_iterations,
+                                ransac_reprojection_error, ransac_confidence,
+                                inliers, cv::SOLVEPNP_ITERATIVE);
+                
+                RCLCPP_INFO(get_logger(), "PnP RANSAC Inliers: %d / %zu", inliers.rows, temp_points2D.size());
+            } else {
+                RCLCPP_INFO(get_logger(), "Skipping RANSAC, using all points");
+                inliers = cv::Mat(temp_points2D.size(), 1, CV_32S);
+                for (size_t i = 0; i < temp_points2D.size(); ++i) {
+                    inliers.at<int>(i) = i;
+                }
+            }
+        } catch (const cv::Exception& e) {
+            RCLCPP_ERROR(get_logger(), "PnP failed: %s", e.what());
             return;
         }
-        estimateInitialPose();
 
+        points2D.clear();
+        points3D.clear();
+        for (int i = 0; i < inliers.rows; ++i) {
+            int idx = inliers.at<int>(i);
+            points2D.push_back(temp_points2D[idx]);
+            points3D.push_back(temp_points3D[idx]);
+        }
+        
+        RCLCPP_INFO(get_logger(), "Final points: %zu", points2D.size());
+    }
+
+    void PerformCalibration()
+    {
+        estimateInitialPose();
+        ApplyRANSAC();
+        estimateInitialPose();
         refineCalibration();
 
         cv::Mat rotation_matrix;
@@ -466,6 +511,10 @@ public:
         auto correspondence_path = declare_parameter<std::string>("correspondence_path");
         auto k_matrix_path = declare_parameter<std::string>("k_matrix_path");
         auto output_path = declare_parameter<std::string>("output_path");
+        use_ransac = declare_parameter<bool>("use_ransac", true);
+        ransac_iterations = declare_parameter<int>("ransac_iterations", 100);
+        ransac_reprojection_error = declare_parameter<double>("ransac_reprojection_error", 8.0);
+        ransac_confidence = declare_parameter<double>("ransac_confidence", 0.99);
         
         camera_base_frame = declare_parameter<std::string>("camera_base_frame");
         camera_sensor_frame = declare_parameter<std::string>("camera_sensor_frame");
