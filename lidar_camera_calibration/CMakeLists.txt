@@ -69,10 +69,9 @@ add_library(lidar_camera_calibration SHARED
 
 target_include_directories(lidar_camera_calibration PUBLIC
   include
-  thirdparty/json/include
-  thirdparty/Bonxai/include
-  thirdparty/nanoflann/include
-  thirdparty/Sophus
+  ../dep_repos/nanoflann/include
+  ../dep_repos/nlohmann-json/include
+  ../dep_repos/Sophus
   ${Boost_INCLUDE_DIRS}
   ${CERES_INCLUDE_DIRS}
   ${GTSAM_INCLUDE_DIRS}
