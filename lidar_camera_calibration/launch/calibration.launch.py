@@ -30,7 +30,7 @@ def generate_launch_description():
     declared_arguments.append(
         DeclareLaunchArgument(
             'use_rviz',
-            default_value='False',
+            default_value='True',
             description='Launch RVIZ on startup'))
     declared_arguments.append(
         DeclareLaunchArgument(
