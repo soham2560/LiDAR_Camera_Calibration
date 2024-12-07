@@ -63,8 +63,8 @@ def generate_launch_description():
     )
 
     data_base_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data"
-    inside2_path = os.path.join(data_base_path, "inside2")
-    inside2_extract_path = os.path.join(data_base_path, "inside2_extract")
+    rosbag_path = os.path.join(data_base_path, "1280rosbags")
+    rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
 
 
 
@@ -145,8 +145,8 @@ def generate_launch_description():
     # Preprocess command
     preprocess_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'preprocess', 
-             inside2_path, 
-             inside2_extract_path, 
+             rosbag_path, 
+             rosbag_extract_path, 
              '-ad'],
         name='preprocess',
         output='screen'
@@ -155,8 +155,7 @@ def generate_launch_description():
     # Find matches with SuperGlue command (triggered after preprocess finishes)
     find_matches_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_matches_superglue.py', 
-             inside2_extract_path, 
-             '--rotate_camera', '180'],
+             rosbag_extract_path],
         name='find_matches',
         output='screen'
     )
@@ -164,7 +163,7 @@ def generate_launch_description():
     # Find correspondences command (triggered after find_matches finishes)
     find_correspondences_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_correspondences', 
-             inside2_extract_path],
+             rosbag_extract_path],
         name='find_correspondences',
         output='screen'
     )
