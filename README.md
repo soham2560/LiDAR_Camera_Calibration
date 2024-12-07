@@ -101,7 +101,7 @@ lidar_camera_calibration/
 │   │   │   │   └── rosbag_0.db3
 │   │   │   ├── <rosbag_folder_1>/
 │   │   │   │   ├── metadata.yaml
-│   │   │   │   └── rosbag_1.db3
+│   │   │   │   └── rosbag_0.db3
 │   │   │   └── ...
 ```
 #### Sample Dataset
