@@ -10,16 +10,6 @@
     <!-- PROPERTIES -->
     <xacro:property name="PI" value="3.1415926535897931"/>
 
-    <!-- MAP -->
-    <link name="map"/>
-
-    <!-- LIDAR -->
-    <joint name="velodyne_base_mount_joint" type="fixed">
-        <origin xyz="0.5 0 0" rpy="0 0 0" />
-        <parent link="map"/>
-        <child link="velodyne_base_link"/>
-    </joint>
-
     <link name="velodyne_base_link">
       <inertial>
         <mass value="0.83"/>

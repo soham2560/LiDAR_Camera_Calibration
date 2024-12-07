@@ -9,5 +9,5 @@ calibration:
       lidar_sensor_frame: "velodyne"
       use_ransac: true
       ransac_iterations: 1000
-      ransac_reprojection_error: 7.5
+      ransac_reprojection_error: 6.0
       ransac_confidence: 0.99

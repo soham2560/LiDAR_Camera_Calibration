@@ -5,10 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /TF1/Tree1
-        - /TF1/Tree1/map1
-        - /TF1/Tree1/map1/camera_bottom_screw_frame1
-        - /TF1/Tree1/map1/camera_bottom_screw_frame1/camera_link1
-        - /TF1/Tree1/map1/camera_bottom_screw_frame1/camera_link1/camera_accel_frame1
         - /Image1/Topic1
       Splitter Ratio: 0.5
     Tree Height: 513
@@ -162,10 +158,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        map:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
         velodyne:
           Alpha: 1
           Show Axes: false
@@ -253,19 +245,17 @@ Visualization Manager:
           Value: false
         camera_link:
           Value: false
-        map:
-          Value: true
         velodyne:
           Value: true
         velodyne_base_link:
           Value: false
-      Marker Scale: 0.4000000059604645
+      Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: false
       Show Axes: true
       Show Names: true
       Tree:
-        map:
+        velodyne_base_link:
           camera_bottom_screw_frame:
             camera_link:
               camera_accel_frame:
@@ -287,9 +277,8 @@ Visualization Manager:
               camera_infra2_frame:
                 camera_infra2_optical_frame:
                   {}
-          velodyne_base_link:
-            velodyne:
-              {}
+          velodyne:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz_default_plugins/Image
@@ -309,7 +298,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 0; 0; 0
-    Fixed Frame: map
+    Fixed Frame: velodyne_base_link
     Frame Rate: 30
   Name: root
   Tools:
@@ -352,25 +341,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 2.3220736980438232
+      Distance: 1.0813632011413574
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.030739925801753998
-        Y: 0.07765645533800125
-        Z: 0
+        X: 0.006830371916294098
+        Y: 0.008184773847460747
+        Z: 0.037435583770275116
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.6797969341278076
+      Pitch: 0.40979719161987305
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz_default_plugins)
-      Yaw: 4.230568885803223
+      Yaw: 3.145563840866089
     Saved:
       - Angle: 0
         Class: rviz_default_plugins/TopDownOrtho
@@ -404,4 +393,4 @@ Window Geometry:
     collapsed: false
   Width: 1850
   X: 70
-  Y: 478
+  Y: 387

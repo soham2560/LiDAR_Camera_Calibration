@@ -62,7 +62,7 @@ def generate_launch_description():
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
 
-    data_base_path = os.path.join(get_package_share_directory, "rosbag_data")
+    data_base_path = os.path.join(package_path, "data","rosbag_data")
     rosbag_path = os.path.join(data_base_path, "rosbags")
     rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
 
