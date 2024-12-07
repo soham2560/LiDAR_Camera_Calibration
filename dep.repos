@@ -1,20 +1,12 @@
 repositories:
-  velodyne-driver:
-    type: git
-    url: git@github.com:ros-drivers/velodyne.git
-    version: 2.5.1
   nlohmann-json:
     type: git
     url: https://github.com/nlohmann/json.git
     version: master
-  nanoflann:
-    type: git
-    url: https://github.com/jlblancoc/nanoflann.git
-    version: master
   sophus:
     type: git
-    url: https://github.com/strasdat/Sophus.git
-    version: main
+    url: https://github.com/soham2560/Sophus.git
+    version: downgradecmake
   superglue:
     type: git
     url: git@github.com:magicleap/SuperGluePretrainedNetwork.git

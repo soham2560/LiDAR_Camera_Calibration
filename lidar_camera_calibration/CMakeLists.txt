@@ -33,25 +33,21 @@ find_package(OpenCV REQUIRED COMPONENTS core)
 find_package(Eigen3 REQUIRED)
 find_package(Ceres REQUIRED)
 find_package(PCL REQUIRED)
-find_package(GTSAM REQUIRED)  # Removed specific components for broader compatibility
+find_package(GTSAM REQUIRED)
 find_package(Boost REQUIRED COMPONENTS filesystem program_options)
 find_package(Iridescence REQUIRED)
 find_package(cv_bridge REQUIRED)
 
-# Automatically find build dependencies
 ament_auto_find_build_dependencies()
 
-# Add definitions
 add_definitions(-DCV_BRIDGE_INCLUDE_H)
 
-# OpenMP support
 find_package(OpenMP)
 if (OPENMP_FOUND)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-# Library
 add_library(lidar_camera_calibration SHARED
   src/camera/create_camera.cpp
   src/calc_tools/common/frame.cpp
@@ -84,13 +80,11 @@ target_link_libraries(lidar_camera_calibration
   ${Boost_LIBRARIES}
   ${PCL_LIBRARIES}
   ${CERES_LIBRARIES}
-  gtsam  # Explicitly link GTSAM libraries
-  gtsam_unstable  # Add unstable libraries if needed
+  gtsam
+  gtsam_unstable
   ${OpenCV_LIBRARIES}
   Iridescence::Iridescence
 )
-
-# Install shared resources
   
 install(
   DIRECTORY config data launch urdf meshes rviz include
@@ -122,14 +116,14 @@ target_include_directories(calibration PUBLIC
   ${OpenCV_INCLUDE_DIRS}
   ${EIGEN3_INCLUDE_DIRS}
   ${CERES_INCLUDE_DIRS}
-  ${GTSAM_INCLUDE_DIRS}  # Added GTSAM include dirs
+  ${GTSAM_INCLUDE_DIRS}
 )
 
 target_link_libraries(calibration
   ${OpenCV_LIBS}
   ${OpenCV_LIBRARIES}
   ${CERES_LIBRARIES}
-  gtsam  # Added GTSAM libraries
+  gtsam
   gtsam_unstable
 )
 
@@ -147,7 +141,7 @@ target_include_directories(preprocess PRIVATE
 )
 target_link_libraries(preprocess 
   lidar_camera_calibration
-  gtsam  # Added GTSAM libraries
+  gtsam
   gtsam_unstable
 )
 ament_target_dependencies(preprocess
@@ -165,19 +159,17 @@ target_include_directories(find_correspondences PRIVATE
 )
 target_link_libraries(find_correspondences 
   lidar_camera_calibration
-  gtsam  # Added GTSAM libraries
+  gtsam
   gtsam_unstable
 )
 ament_target_dependencies(find_correspondences rclcpp)
 install(TARGETS find_correspondences DESTINATION lib/${PROJECT_NAME})
 
-# Python scripts
 ament_python_install_package(${PROJECT_NAME})
 install(PROGRAMS lidar_camera_calibration/find_matches_superglue.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# Export library and dependencies
 ament_export_libraries(lidar_camera_calibration)
 ament_export_dependencies(
   rclcpp
@@ -186,18 +178,9 @@ ament_export_dependencies(
   Boost
   PCL
   Ceres
-  GTSAM  # Ensure GTSAM is exported
+  GTSAM
   tf2_ros
   sensor_msgs
   geometry_msgs
 )
 ament_auto_package()
-
-# if(BUILD_TESTING)
-#   find_package(ament_lint_auto REQUIRED)
-#   set(ament_cmake_copyright_FOUND TRUE)
-#   set(ament_cmake_cpplint_FOUND TRUE)
-#   ament_lint_auto_find_test_dependencies()
-# endif()
-
-# ament_package()

@@ -10,21 +10,7 @@
 
 #include <camera/create_camera.hpp>
 #include <calc_tools/common/visual_lidar_data.hpp>
-
-// #include <gtsam/geometry/SO3.h>
-// #include <gtsam/geometry/Pose3.h>
-
-// #include <dfo/nelder_mead.hpp>
 #include <calc_tools/common/console_colors.hpp>
-
-// #include <camera/create_camera.hpp>
-// #include <calc_tools/common/estimate_fov.hpp>
-// #include <calc_tools/common/estimate_pose.hpp>
-// #include <calc_tools/common/visual_lidar_data.hpp>
-
-// #include <glk/primitives/primitives.hpp>
-// #include <glk/pointcloud_buffer.hpp>
-// #include <guik/viewer/light_viewer.hpp>
 
 namespace calc_tools {
 
@@ -116,7 +102,6 @@ public:
   }
 
   void output_correspondences() {
-    // Open the output file for correspondences
     std::ofstream correspondences_file("/ros2_ws/src/lidar_camera_calibration/data/correspondences.txt");
     if(!correspondences_file) {
       std::cerr << calc_tools::console::bold_red 
@@ -124,18 +109,11 @@ public:
                 << calc_tools::console::reset << std::endl;
       return;
     }
-
-    // Scientific notation formatting
     correspondences_file << std::scientific << std::setprecision(18);
-
-    // Write correspondences
     for (const auto& corr : correspondences) {
-      // Format: image_x image_y lidar_x lidar_y lidar_z
       correspondences_file << corr.first.x() << " " << corr.first.y() << " "
                            << corr.second.x() << " " << corr.second.y() << " " << corr.second.z() << "\n";
     }
-
-    // Print summary
     std::cout << calc_tools::console::bold_green 
               << "Total Correspondences: " << correspondences.size()
               << calc_tools::console::reset << std::endl;

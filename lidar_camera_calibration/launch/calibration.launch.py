@@ -62,7 +62,7 @@ def generate_launch_description():
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
 
-    data_base_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data"
+    data_base_path = os.path.join(get_package_share_directory, "rosbag_data")
     rosbag_path = os.path.join(data_base_path, "rosbags")
     rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
 
@@ -142,7 +142,6 @@ def generate_launch_description():
         condition=IfCondition(enable_hardware)
     )
 
-    # Preprocess command
     preprocess_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'preprocess', 
              rosbag_path, 
@@ -152,7 +151,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Find matches with SuperGlue command (triggered after preprocess finishes)
     find_matches_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_matches_superglue.py', 
              rosbag_extract_path],
@@ -160,7 +158,6 @@ def generate_launch_description():
         output='screen'
     )
 
-    # Find correspondences command (triggered after find_matches finishes)
     find_correspondences_node = ExecuteProcess(
         cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_correspondences', 
              rosbag_extract_path],
@@ -197,7 +194,6 @@ def generate_launch_description():
         )
     )
 
-
     calibration_node = RegisterEventHandler(
         OnProcessExit(
             target_action=zhangs_node,
@@ -218,7 +214,7 @@ def generate_launch_description():
         rviz_node,
         rosbag_recorder_launch,
         sync_sensors,
-        preprocess_node , # preprocess_handler,
+        preprocess_node,
         find_matches_handler,
         find_correspondences_handler,
         zhangs_handler,
