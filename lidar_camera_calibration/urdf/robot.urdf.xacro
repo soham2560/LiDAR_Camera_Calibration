@@ -10,6 +10,16 @@
     <!-- PROPERTIES -->
     <xacro:property name="PI" value="3.1415926535897931"/>
 
+    <!-- MAP -->
+    <link name="map"/>
+
+    <joint name="velodyne_joint" type="fixed">
+      <parent link="map"/>
+      <child link="velodyne_base_link"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+
+    <!-- VELODYNE -->
     <link name="velodyne_base_link">
       <inertial>
         <mass value="0.83"/>
