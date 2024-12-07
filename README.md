@@ -33,13 +33,12 @@ The repository has currently been setup with
 - To start container
     - Open Command Pallete with `Ctrl+Shift+P`
     - Select Option to Rebuild and Reopen Container
-    - You can use `Import Libs` button once container has opened to import dependent libs
     - Use `Build WS` button to build workspace
   
   Note: To access these buttons you may need to enable [VSCode Action Button Extension](https://marketplace.visualstudio.com/items?itemName=seunlanlege.action-buttons) through the Extensions Tab in VSCode, the extension should download automatically on container startup
 
 ## How to Use
-- Import, Build and Source the Workspace
+- Build and Source the Workspace
 - Ensure Hardware is setup properly and powered on
 - Use following command to launch
   ```bash
