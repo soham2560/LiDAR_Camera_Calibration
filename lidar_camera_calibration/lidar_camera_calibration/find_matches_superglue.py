@@ -2,6 +2,9 @@
 # WARNING: SuperGlue is allowed to be used for non-commercial research purposes!!
 #        : You must carefully check and follow its licensing condition!!
 #        : https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/LICENSE
+import sys
+import os
+sys.path.append(os.path.abspath('/ros2_ws/src/dep_repos/superglue'))
 from email.mime import image
 import sys
 import cv2

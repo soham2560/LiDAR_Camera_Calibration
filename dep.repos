@@ -15,3 +15,8 @@ repositories:
     type: git
     url: https://github.com/strasdat/Sophus.git
     version: main
+  superglue:
+    type: git
+    url: git@github.com:magicleap/SuperGluePretrainedNetwork.git
+    version: master
+    
