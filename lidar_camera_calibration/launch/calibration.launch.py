@@ -63,7 +63,7 @@ def generate_launch_description():
     )
 
     data_base_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data"
-    rosbag_path = os.path.join(data_base_path, "1280rosbags")
+    rosbag_path = os.path.join(data_base_path, "rosbags")
     rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
 
 
@@ -217,7 +217,7 @@ def generate_launch_description():
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
-        # sync_sensors,
+        sync_sensors,
         preprocess_node , # preprocess_handler,
         find_matches_handler,
         find_correspondences_handler,
