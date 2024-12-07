@@ -176,7 +176,6 @@ A sample dataset of checkerboard images for our hardware setup can be found [her
   ros2 launch lidar_camera_calibration calibration.launch.py
   ```
 - A few launch option are available with above command
-  - `use_rviz:=True/False` : Launches Rviz along with setup to allow for visualization 
   - `enable_hardware:=True/False` : Launches hardware interfaces for LiDAR and Camera
   - `record:=True/False` : Starts rosbag recording 5 seconds into launch
 

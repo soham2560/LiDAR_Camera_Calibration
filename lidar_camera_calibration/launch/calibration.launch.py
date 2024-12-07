@@ -29,11 +29,6 @@ def generate_launch_description():
             description='Record in rosbag'))
     declared_arguments.append(
         DeclareLaunchArgument(
-            'use_rviz',
-            default_value='True',
-            description='Launch RVIZ on startup'))
-    declared_arguments.append(
-        DeclareLaunchArgument(
             'enable_hardware',
             default_value='False',
             description='Enable hardware drivers'))
@@ -43,7 +38,6 @@ def generate_launch_description():
 
     namespace = LaunchConfiguration('namespace')
     record = LaunchConfiguration('record')
-    use_rviz = LaunchConfiguration('use_rviz')
     enable_hardware = LaunchConfiguration('enable_hardware')
 
     package_path = get_package_share_directory('lidar_camera_calibration')
@@ -90,9 +84,20 @@ def generate_launch_description():
         name='rviz2',
         output='log',
         namespace=namespace,
-        arguments=['-d', package_path + '/rviz/robot.rviz'],
+        arguments=['-d', package_path + '/rviz/robot_hw.rviz'],
         on_exit=Shutdown(),
-        condition=IfCondition(use_rviz),
+        condition=IfCondition(enable_hardware),
+    )
+
+    rviz_node = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='log',
+        namespace=namespace,
+        arguments=['-d', package_path + '/rviz/robot_sw.rviz'],
+        on_exit=Shutdown(),
+        condition=UnlessCondition(enable_hardware),
     )
 
     rosbag_recorder_launch = TimerAction(
