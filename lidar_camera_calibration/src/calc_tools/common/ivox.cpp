@@ -144,7 +144,7 @@ void iVox::insert(const Frame& frame) {
   lru_count++;
 
   // Insert points into corresponding voxels
-  for (int i = 0; i < frame.size(); i++) {
+  for (int i = 0; i < (int)frame.size(); i++) {
     const auto& point = frame.points[i];
     const Eigen::Vector3i coord = voxel_coord(point);
 
@@ -223,7 +223,7 @@ size_t iVox::nearest_neighbor_search(const double* pt, size_t* k_indices, double
     found->second->last_lru_count = lru_count;
 
     // For each point in the voxel
-    for (int i = 0; i < found->second->size(); i++) {
+    for (int i = 0; i < (int)found->second->size(); i++) {
       const double dist = (point - found->second->points[i]).squaredNorm();
       if (dist > min_dist) {
         continue;
@@ -264,7 +264,7 @@ size_t iVox::knn_search(const double* pt, size_t k, size_t* k_indices, double* k
 
     found->second->last_lru_count = lru_count;
 
-    for (int i = 0; i < found->second->size(); i++) {
+    for (int i = 0; i < (int)found->second->size(); i++) {
       const size_t index = calc_index(found->second->serial_id, i);
       const double dist = (point - found->second->points[i]).squaredNorm();
       neighbors.emplace_back(index, dist);
@@ -276,7 +276,7 @@ size_t iVox::knn_search(const double* pt, size_t k, size_t* k_indices, double* k
     std::sort(neighbors.begin(), neighbors.end(), [](const std::pair<size_t, double>& lhs, const std::pair<size_t, double>& rhs) {
       return lhs.second < rhs.second;
     });
-    for (int i = 0; i < neighbors.size(); i++) {
+    for (int i = 0; i < (int)neighbors.size(); i++) {
       k_indices[i] = neighbors[i].first;
       k_sq_dists[i] = neighbors[i].second;
     }
@@ -289,7 +289,7 @@ size_t iVox::knn_search(const double* pt, size_t k, size_t* k_indices, double* k
     neighbors.end(),
     [](const std::pair<size_t, double>& lhs, const std::pair<size_t, double>& rhs) { return lhs.second < rhs.second; });
 
-  for (int i = 0; i < k; i++) {
+  for (int i = 0; i < (int)k; i++) {
     k_indices[i] = neighbors[i].first;
     k_sq_dists[i] = neighbors[i].second;
   }

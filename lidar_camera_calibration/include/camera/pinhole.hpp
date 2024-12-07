@@ -61,8 +61,6 @@ struct CameraModelTraits<PinholeProjection> {
 
   static std::string distortion_model() { return "plumb_bob"; }
 
-  static Eigen::Vector4d init_intrinsic(int width, int height, const Eigen::VectorXd& pinhole_intrinsic) { return pinhole_intrinsic; }
-
   static Eigen::Matrix<double, 5, 1> init_distortion() { return Eigen::Matrix<double, 5, 1>::Zero(); }
 };
 

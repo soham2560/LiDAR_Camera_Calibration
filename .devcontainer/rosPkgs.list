@@ -10,3 +10,7 @@ net-tools
 ros-humble-realsense2-*
 ros-humble-librealsense2-*
 ros-humble-velodyne*
+curl
+zip
+unzip
+tar

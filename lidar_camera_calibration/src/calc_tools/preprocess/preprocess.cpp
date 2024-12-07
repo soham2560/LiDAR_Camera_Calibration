@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 #include <boost/algorithm/string.hpp>
 
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 #include <calc_tools/common/frame_cpu.hpp>
 #include <calc_tools/common/time_keeper.hpp>
@@ -149,7 +149,7 @@ bool Preprocess::run(int argc, char** argv) {
 
   // omp_set_max_active_levels(2);
   // #pragma omp parallel for
-  for (int i = 0; i < bag_filenames.size(); i++) {
+  for (int i = 0; i < (int)bag_filenames.size(); i++) {
     std::cout << "start processing " << bag_filenames[i] << std::endl;
 
     const auto& bag_filename = bag_filenames[i];
@@ -200,7 +200,7 @@ bool Preprocess::run(int argc, char** argv) {
 
   std::cout << "save LiDAR images" << std::endl;
 #pragma omp parallel for
-  for (int i = 0; i < bag_filenames.size(); i++) {
+  for (int i = 0; i < (int)bag_filenames.size(); i++) {
     const std::string bag_name = std::filesystem::path(bag_filenames[i]).filename();
     auto [intensities, indices] = calc_tools::generate_lidar_image(lidar_proj, lidar_image_size, T_lidar_camera.inverse(), lidar_points[i]);
 
@@ -467,7 +467,7 @@ std::pair<cv::Mat, Frame::ConstPtr> Preprocess::get_image_and_points(
   std::sort(indices.begin(), indices.end(), [&](const int lhs, const int rhs) { return points->intensities[lhs] < points->intensities[rhs]; });
 
   const int bins = 256;
-  for (int i = 0; i < indices.size(); i++) {
+  for (int i = 0; i < (int)indices.size(); i++) {
     const double value = std::floor(bins * static_cast<double>(i) / indices.size()) / bins;
     points->intensities[indices[i]] = value;
   }

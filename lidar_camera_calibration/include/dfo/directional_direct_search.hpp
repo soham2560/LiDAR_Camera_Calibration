@@ -33,7 +33,7 @@ public:
     result.x = x0;
     result.y = function(x0);
 
-    for (int i = 0; i < params.max_iterations; i++) {
+    for (int i = 0; i < (int)params.max_iterations; i++) {
       result.num_iterations = i;
 
       result.y = function(result.x);

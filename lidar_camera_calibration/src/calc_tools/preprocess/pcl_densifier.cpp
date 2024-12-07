@@ -56,7 +56,7 @@ void DynamicPointCloudIntegrator::insert_points(const Frame::ConstPtr& raw_point
   // Find kNN
   KdTree2<Frame> tree(points);
 #pragma omp parallel for num_threads(params.num_threads)
-  for (int i = 0; i < points->size(); i++) {
+  for (int i = 0; i < (int)points->size(); i++) {
     std::vector<size_t> k_indices(params.k_neighbors);
     std::vector<double> k_sq_dists(params.k_neighbors);
     tree.knn_search(points->points[i].data(), params.k_neighbors, k_indices.data(), k_sq_dists.data());
@@ -97,7 +97,7 @@ void DynamicPointCloudIntegrator::insert_points(const Frame::ConstPtr& raw_point
     lm_params.setVerbosityLM("SUMMARY");
   }
 
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < (int)3; i++) {
     values = gtsam::LevenbergMarquardtOptimizer(graph, values, lm_params).optimize();
   }
 
@@ -136,7 +136,7 @@ void DynamicPointCloudIntegrator::voxelgrid_task() {
     gtsam::Pose3 T_odom_lidar = T_odom_lidar_begin;
 
     const double time_eps = 1e-4;
-    for (int i = 0; i < raw_points->size(); i++) {
+    for (int i = 0; i < (int)raw_points->size(); i++) {
       const double t = raw_points->times[i] / max_timestamp;
 
       if (t - last_t > time_eps) {

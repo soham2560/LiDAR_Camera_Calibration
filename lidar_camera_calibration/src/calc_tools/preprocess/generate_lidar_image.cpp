@@ -14,7 +14,7 @@ generate_lidar_image(const camera::GenericCameraBase::ConstPtr& proj, const Eige
   cv::Mat intensity_image(image_size[1], image_size[0], CV_64FC1, cv::Scalar::all(0));
   cv::Mat index_image(image_size[1], image_size[0], CV_32SC1, cv::Scalar::all(-1));
 
-  for (int i = 0; i < points->size(); i++) {
+  for (int i = 0; i < (int)points->size(); i++) {
     const auto& pt_lidar = points->points[i];
     const Eigen::Vector4d pt_camera = T_camera_lidar * pt_lidar;
 

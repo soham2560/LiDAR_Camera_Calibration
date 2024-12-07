@@ -32,7 +32,7 @@ IntegratedCT_ICPFactor_<TargetFrame, SourceFrame>::IntegratedCT_ICPFactor_(
   time_indices.reserve(frame::size(*source));
 
   const double time_eps = 1e-3;
-  for (int i = 0; i < frame::size(*source); i++) {
+  for (int i = 0; i < (int)frame::size(*source); i++) {
     const double t = frame::time(*source, i);
     if (time_table.empty() || t - time_table.back() > time_eps) {
       time_table.push_back(t);
@@ -70,7 +70,7 @@ double IntegratedCT_ICPFactor_<TargetFrame, SourceFrame>::error(const gtsam::Val
   }
 
   double sum_errors = 0.0;
-  for (int i = 0; i < frame::size(*source); i++) {
+  for (int i = 0; i < (int)frame::size(*source); i++) {
     const long target_index = correspondences[i];
     if (target_index < 0) {
       continue;
@@ -110,7 +110,7 @@ boost::shared_ptr<gtsam::GaussianFactor> IntegratedCT_ICPFactor_<TargetFrame, So
   gtsam::Vector6 b_0 = gtsam::Vector6::Zero();
   gtsam::Vector6 b_1 = gtsam::Vector6::Zero();
 
-  for (int i = 0; i < frame::size(*source); i++) {
+  for (int i = 0; i < (int)frame::size(*source); i++) {
     const long target_index = correspondences[i];
     if (target_index < 0) {
       continue;
@@ -165,7 +165,7 @@ void IntegratedCT_ICPFactor_<TargetFrame, SourceFrame>::update_poses(const gtsam
   pose_derivatives_t0.resize(time_table.size());
   pose_derivatives_t1.resize(time_table.size());
 
-  for (int i = 0; i < time_table.size(); i++) {
+  for (int i = 0; i < (int)time_table.size(); i++) {
     const double t = time_table[i];
 
     gtsam::Matrix6 H_inc_vel;
@@ -185,7 +185,7 @@ template <typename TargetFrame, typename SourceFrame>
 void IntegratedCT_ICPFactor_<TargetFrame, SourceFrame>::update_correspondences() const {
   correspondences.resize(frame::size(*source));
 
-  for (int i = 0; i < frame::size(*source); i++) {
+  for (int i = 0; i < (int)frame::size(*source); i++) {
     const int time_index = time_indices[i];
 
     const auto& pt = frame::point(*source, i);
@@ -216,7 +216,7 @@ std::vector<Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d>> Integrat
   }
 
   std::vector<Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d>> deskewed(frame::size(*source));
-  for (int i = 0; i < frame::size(*source); i++) {
+  for (int i = 0; i < (int)frame::size(*source); i++) {
     const int time_index = time_indices[i];
     const auto& pose = source_poses[time_index];
     deskewed[i] = pose.matrix() * (Eigen::Vector4d() << frame::point(*source, i).template head<3>(), 1.0).finished();

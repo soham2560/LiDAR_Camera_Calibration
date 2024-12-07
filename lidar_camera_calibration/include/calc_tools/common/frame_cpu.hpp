@@ -140,7 +140,7 @@ template <typename Func>
 FrameCPU::Ptr filter(const Frame::ConstPtr& frame, const Func& pred) {
   std::vector<int> indices;
   indices.reserve(frame->size());
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     if (pred(frame->points[i])) {
       indices.push_back(i);
     }
@@ -157,7 +157,7 @@ template <typename Func>
 FrameCPU::Ptr filter_by_index(const Frame::ConstPtr& frame, const Func& pred) {
   std::vector<int> indices;
   indices.reserve(frame->size());
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     if (pred(i)) {
       indices.push_back(i);
     }

@@ -106,7 +106,7 @@ static RawPoints::Ptr extract_raw_points(const PointCloud2& points_msg, const st
 
   std::vector<Eigen::Vector4d, Eigen::aligned_allocator<Eigen::Vector4d>> points;
   points.resize(num_points);
-  for (int i = 0; i < num_points; i++) {
+  for (int i = 0; i < (int)num_points; i++) {
     const auto* x_ptr = &points_msg.data[points_msg.point_step * i + x_offset];
     const auto* y_ptr = &points_msg.data[points_msg.point_step * i + y_offset];
     const auto* z_ptr = &points_msg.data[points_msg.point_step * i + z_offset];
@@ -122,7 +122,7 @@ static RawPoints::Ptr extract_raw_points(const PointCloud2& points_msg, const st
   if (time_offset >= 0) {
     times.resize(num_points);
 
-    for (int i = 0; i < num_points; i++) {
+    for (int i = 0; i < (int)num_points; i++) {
       const auto* time_ptr = &points_msg.data[points_msg.point_step * i + time_offset];
       switch (time_type) {
         case PointField::UINT32:
@@ -145,7 +145,7 @@ static RawPoints::Ptr extract_raw_points(const PointCloud2& points_msg, const st
   if (intensity_offset >= 0) {
     intensities.resize(num_points);
 
-    for (int i = 0; i < num_points; i++) {
+    for (int i = 0; i < (int)num_points; i++) {
       const auto* intensity_ptr = &points_msg.data[points_msg.point_step * i + intensity_offset];
       switch (intensity_type) {
         case PointField::UINT8:

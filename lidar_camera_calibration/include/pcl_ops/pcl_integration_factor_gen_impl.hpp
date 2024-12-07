@@ -45,7 +45,7 @@ double IntegratedCT_GICPFactor_<TargetFrame, SourceFrame>::error(const gtsam::Va
 
   double sum_errors = 0.0;
 #pragma omp parallel for reduction(+ : sum_errors) schedule(guided, 8) num_threads(this->num_threads)
-  for (int i = 0; i < frame::size(*this->source); i++) {
+  for (int i = 0; i < (int)frame::size(*this->source); i++) {
     const long target_index = this->correspondences[i];
     if (target_index < 0) {
       continue;
@@ -78,14 +78,8 @@ boost::shared_ptr<gtsam::GaussianFactor> IntegratedCT_GICPFactor_<TargetFrame, S
   std::vector<gtsam::Vector6, Eigen::aligned_allocator<gtsam::Vector6>> bs_0(this->num_threads, gtsam::Vector6::Zero());
   std::vector<gtsam::Vector6, Eigen::aligned_allocator<gtsam::Vector6>> bs_1(this->num_threads, gtsam::Vector6::Zero());
 
-  gtsam::Matrix6 H_00 = gtsam::Matrix6::Zero();
-  gtsam::Matrix6 H_01 = gtsam::Matrix6::Zero();
-  gtsam::Matrix6 H_11 = gtsam::Matrix6::Zero();
-  gtsam::Vector6 b_0 = gtsam::Vector6::Zero();
-  gtsam::Vector6 b_1 = gtsam::Vector6::Zero();
-
 #pragma omp parallel for reduction(+ : sum_errors) schedule(guided, 8) num_threads(this->num_threads)
-  for (int i = 0; i < frame::size(*this->source); i++) {
+  for (int i = 0; i < (int)frame::size(*this->source); i++) {
     const long target_index = this->correspondences[i];
     if (target_index < 0) {
       continue;
@@ -147,7 +141,7 @@ void IntegratedCT_GICPFactor_<TargetFrame, SourceFrame>::update_correspondences(
   this->mahalanobis.resize(frame::size(*this->source));
 
 #pragma omp parallel for schedule(guided, 8) num_threads(this->num_threads)
-  for (int i = 0; i < frame::size(*this->source); i++) {
+  for (int i = 0; i < (int)frame::size(*this->source); i++) {
     const int time_index = this->time_indices[i];
     const Eigen::Matrix4d pose = this->source_poses[time_index].matrix();
 

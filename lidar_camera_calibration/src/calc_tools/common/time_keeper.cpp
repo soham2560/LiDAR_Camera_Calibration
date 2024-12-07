@@ -74,7 +74,7 @@ void TimeKeeper::replace_points_stamp(const calc_tools::RawPoints::Ptr& points) 
     points->times.resize(points->size(), 0.0);
     const double scan_duration = estimate_scan_duration(points->stamp);
     if (scan_duration > 0.0) {
-      for (int i = 0; i < points->size(); i++) {
+      for (int i = 0; i < (int)points->size(); i++) {
         points->times[i] = scan_duration * static_cast<double>(i) / points->size();
       }
     }

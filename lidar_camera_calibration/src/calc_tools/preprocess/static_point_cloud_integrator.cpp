@@ -23,7 +23,7 @@ StaticPointCloudIntegrator::StaticPointCloudIntegrator(const StaticPointCloudInt
 StaticPointCloudIntegrator::~StaticPointCloudIntegrator() {}
 
 void StaticPointCloudIntegrator::insert_points(const Frame::ConstPtr& raw_points) {
-  for (int i = 0; i < raw_points->size(); i++) {
+  for (int i = 0; i < (int)raw_points->size(); i++) {
     const auto& pt = raw_points->points[i];
     const double intensity = raw_points->intensities[i];
 

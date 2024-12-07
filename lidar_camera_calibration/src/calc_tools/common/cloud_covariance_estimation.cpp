@@ -40,7 +40,7 @@ void CloudCovarianceEstimation::estimate(
 
   std::vector<Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d>> pt_cross(points.size());
 #pragma omp parallel for num_threads(num_threads) schedule(guided, 8)
-  for (int i = 0; i < points.size(); i++) {
+  for (int i = 0; i < (int)points.size(); i++) {
     pt_cross[i] = points[i] * points[i].transpose();
   }
 
@@ -49,7 +49,7 @@ void CloudCovarianceEstimation::estimate(
 
   // Calculate covariances
 #pragma omp parallel for num_threads(num_threads) schedule(guided, 8)
-  for (int i = 0; i < points.size(); i++) {
+  for (int i = 0; i < (int)points.size(); i++) {
     Eigen::Vector4d sum_points = Eigen::Vector4d::Zero();
     Eigen::Matrix4d sum_cross = Eigen::Matrix4d::Zero();
 
@@ -85,13 +85,13 @@ std::vector<Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d>> CloudCov
 
   // Precompute pt * pt.transpose()
   std::vector<Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d>> pt_cross(points.size());
-  for (int i = 0; i < points.size(); i++) {
+  for (int i = 0; i < (int)points.size(); i++) {
     pt_cross[i] = points[i] * points[i].transpose();
   }
 
   // Calculate covariances
   std::vector<Eigen::Matrix4d, Eigen::aligned_allocator<Eigen::Matrix4d>> covs(points.size());
-  for (int i = 0; i < points.size(); i++) {
+  for (int i = 0; i < (int)points.size(); i++) {
     Eigen::Vector4d sum_points = Eigen::Vector4d::Zero();
     Eigen::Matrix4d sum_cross = Eigen::Matrix4d::Zero();
 

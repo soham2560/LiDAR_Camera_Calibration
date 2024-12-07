@@ -866,12 +866,12 @@ public:
       node->node_type.lr.right = right;
 
       // compute bounding-box of leaf points
-      for (int i = 0; i < (DIM > 0 ? DIM : obj.dim); ++i) {
+      for (int i = 0; i < (int)(DIM > 0 ? DIM : obj.dim); ++i) {
         bbox[i].low = dataset_get(obj, obj.vind[left], i);
         bbox[i].high = dataset_get(obj, obj.vind[left], i);
       }
       for (IndexType k = left + 1; k < right; ++k) {
-        for (int i = 0; i < (DIM > 0 ? DIM : obj.dim); ++i) {
+        for (int i = 0; i < (int)(DIM > 0 ? DIM : obj.dim); ++i) {
           if (bbox[i].low > dataset_get(obj, obj.vind[k], i))
             bbox[i].low = dataset_get(obj, obj.vind[k], i);
           if (bbox[i].high < dataset_get(obj, obj.vind[k], i))
@@ -898,7 +898,7 @@ public:
       node->node_type.sub.divlow = left_bbox[cutfeat].high;
       node->node_type.sub.divhigh = right_bbox[cutfeat].low;
 
-      for (int i = 0; i < (DIM > 0 ? DIM : obj.dim); ++i) {
+      for (int i = 0; i < (int)(DIM > 0 ? DIM : obj.dim); ++i) {
         bbox[i].low = std::min(left_bbox[i].low, right_bbox[i].low);
         bbox[i].high = std::max(left_bbox[i].high, right_bbox[i].high);
       }
@@ -920,7 +920,7 @@ public:
     }
     ElementType max_spread = -1;
     cutfeat = 0;
-    for (int i = 0; i < (DIM > 0 ? DIM : obj.dim); ++i) {
+    for (int i = 0; i < (int)(DIM > 0 ? DIM : obj.dim); ++i) {
       ElementType span = bbox[i].high - bbox[i].low;
       if (span > (1 - EPS) * max_span) {
         ElementType min_elem, max_elem;
@@ -1008,7 +1008,7 @@ public:
     assert(vec);
     DistanceType distsq = DistanceType();
 
-    for (int i = 0; i < (DIM > 0 ? DIM : obj.dim); ++i) {
+    for (int i = 0; i < (int)(DIM > 0 ? DIM : obj.dim); ++i) {
       if (vec[i] < obj.root_bbox[i].low) {
         dists[i] = obj.distance.accum_dist(vec[i], obj.root_bbox[i].low, i);
         distsq += dists[i];
@@ -1322,11 +1322,11 @@ public:
       if (!N)
         throw std::runtime_error("[nanoflann] computeBoundingBox() called but "
                                  "no data points found.");
-      for (int i = 0; i < (DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
+      for (int i = 0; i < (int)(DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
         bbox[i].low = bbox[i].high = this->dataset_get(*this, 0, i);
       }
       for (size_t k = 1; k < N; ++k) {
-        for (int i = 0; i < (DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
+        for (int i = 0; i < (int)(DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
           if (this->dataset_get(*this, k, i) < bbox[i].low)
             bbox[i].low = this->dataset_get(*this, k, i);
           if (this->dataset_get(*this, k, i) > bbox[i].high)
@@ -1672,12 +1672,12 @@ public:
       if (!N)
         throw std::runtime_error("[nanoflann] computeBoundingBox() called but "
                                  "no data points found.");
-      for (int i = 0; i < (DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
+      for (int i = 0; i < (int)(DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
         bbox[i].low = bbox[i].high =
             this->dataset_get(*this, BaseClassRef::vind[0], i);
       }
       for (size_t k = 1; k < N; ++k) {
-        for (int i = 0; i < (DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
+        for (int i = 0; i < (int)(DIM > 0 ? DIM : BaseClassRef::dim); ++i) {
           if (this->dataset_get(*this, BaseClassRef::vind[k], i) < bbox[i].low)
             bbox[i].low = this->dataset_get(*this, BaseClassRef::vind[k], i);
           if (this->dataset_get(*this, BaseClassRef::vind[k], i) > bbox[i].high)
@@ -1886,7 +1886,7 @@ public:
       int pos = First0Bit(pointCount);
       index[pos].vind.clear();
       treeIndex[pointCount] = pos;
-      for (int i = 0; i < pos; i++) {
+      for (int i = 0; i < (int)pos; i++) {
         for (int j = 0; j < static_cast<int>(index[i].vind.size()); j++) {
           index[pos].vind.push_back(index[i].vind[j]);
           if (treeIndex[index[i].vind[j]] != -1)

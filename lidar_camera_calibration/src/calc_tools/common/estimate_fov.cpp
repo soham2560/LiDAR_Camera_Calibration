@@ -74,13 +74,13 @@ double estimate_lidar_fov(const Frame::ConstPtr& points) {
 
   // Precompute bearing vectors
   std::vector<Eigen::Vector3d> dirs(hull->size());
-  for (int i = 0; i < hull->size(); i++) {
+  for (int i = 0; i < (int)hull->size(); i++) {
     dirs[i] = hull->at(i).getVector3fMap().cast<double>().normalized();
   }
 
   // Find the maximum angle in the convexhull
   double min_cosine = M_PI;
-  for (int i = 0; i < hull->size(); i++) {
+  for (int i = 0; i < (int)hull->size(); i++) {
     for (int j = i + 1; j < hull->size(); j++) {
       const double cosine = dirs[i].dot(dirs[j]);
       min_cosine = std::min(cosine, min_cosine);

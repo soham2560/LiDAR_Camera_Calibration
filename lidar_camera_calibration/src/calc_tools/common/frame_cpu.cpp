@@ -78,7 +78,7 @@ template void FrameCPU::add_times(const double* times, int num_points);
 template <typename T, int D>
 void FrameCPU::add_points(const Eigen::Matrix<T, D, 1>* points, int num_points) {
   points_storage.resize(num_points, Eigen::Vector4d(0.0, 0.0, 0.0, 1.0));
-  for (int i = 0; i < num_points; i++) {
+  for (int i = 0; i < (int)num_points; i++) {
     points_storage[i].head<D>() = points[i].template head<D>().template cast<double>();
   }
   this->points = points_storage.data();
@@ -95,7 +95,7 @@ template <typename T, int D>
 void FrameCPU::add_normals(const Eigen::Matrix<T, D, 1>* normals, int num_points) {
   assert(num_points == size());
   normals_storage.resize(num_points, Eigen::Vector4d::Zero());
-  for (int i = 0; i < num_points; i++) {
+  for (int i = 0; i < (int)num_points; i++) {
     normals_storage[i].head<D>() = normals[i].template head<D>().template cast<double>();
   }
   this->normals = normals_storage.data();
@@ -111,7 +111,7 @@ template <typename T, int D>
 void FrameCPU::add_covs(const Eigen::Matrix<T, D, D>* covs, int num_points) {
   assert(num_points == size());
   covs_storage.resize(num_points, Eigen::Matrix4d::Zero());
-  for (int i = 0; i < num_points; i++) {
+  for (int i = 0; i < (int)num_points; i++) {
     covs_storage[i].block<D, D>(0, 0) = covs[i].template block<D, D>(0, 0).template cast<double>();
   }
   this->covs = covs_storage.data();
@@ -315,7 +315,7 @@ FrameCPU::Ptr sample(const Frame::ConstPtr& frame, const std::vector<int>& indic
     const unsigned char* data_ptr = static_cast<const unsigned char*>(attrib.second.second);
 
     auto storage = std::make_shared<std::vector<unsigned char>>(indices.size() * elem_size);
-    for (int i = 0; i < indices.size(); i++) {
+    for (int i = 0; i < (int)indices.size(); i++) {
       const auto src = data_ptr + elem_size * indices[i];
       auto dst = storage->data() + elem_size * i;
       memcpy(dst, src, elem_size);
@@ -358,7 +358,7 @@ FrameCPU::Ptr voxelgrid_sampling(const Frame::ConstPtr& frame, const double voxe
   VoxelMap voxelmap;
 
   // Insert point indices to corresponding voxels
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     const Eigen::Vector3i coord = (frame->points[i].array() / voxel_resolution).floor().cast<int>().head<3>();
     auto found = voxelmap.find(coord);
     if (found == voxelmap.end()) {
@@ -457,7 +457,7 @@ FrameCPU::Ptr randomgrid_sampling(const Frame::ConstPtr& frame, const double vox
   voxelmap.rehash(frame->size() * sampling_rate);
 
   // Insert point indices to corresponding voxels
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     const Eigen::Vector3i coord = (frame->points[i].array() / voxel_resolution).floor().cast<int>().head<3>();
     auto found = voxelmap.find(coord);
     if (found == voxelmap.end()) {
@@ -510,18 +510,18 @@ FrameCPU::Ptr sort_by_time(const Frame::ConstPtr& frame) {
 template <>
 FrameCPU::Ptr transform(const Frame::ConstPtr& frame, const Eigen::Transform<double, 3, Eigen::Isometry>& transformation) {
   auto transformed = std::make_shared<FrameCPU>(*frame);
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     transformed->points[i] = transformation * frame->points[i];
   }
 
   if (frame->normals) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       transformed->normals[i] = transformation.matrix() * frame->normals[i];
     }
   }
 
   if (frame->covs) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       transformed->covs[i] = transformation.matrix() * frame->covs[i] * transformation.matrix().transpose();
     }
   }
@@ -537,20 +537,20 @@ FrameCPU::Ptr transform(const Frame::ConstPtr& frame, const Eigen::Transform<flo
 template <>
 FrameCPU::Ptr transform(const Frame::ConstPtr& frame, const Eigen::Transform<double, 3, Eigen::Affine>& transformation) {
   auto transformed = std::make_shared<FrameCPU>(*frame);
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     transformed->points[i] = transformation * frame->points[i];
   }
 
   if (frame->normals) {
     Eigen::Matrix4d normal_matrix = Eigen::Matrix4d::Zero();
     normal_matrix.block<3, 3>(0, 0) = transformation.linear().inverse().transpose();
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       transformed->normals[i] = normal_matrix * frame->normals[i];
     }
   }
 
   if (frame->covs) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       transformed->covs[i] = transformation.matrix() * frame->covs[i] * transformation.matrix().transpose();
     }
   }
@@ -566,18 +566,18 @@ FrameCPU::Ptr transform(const Frame::ConstPtr& frame, const Eigen::Transform<flo
 // transform_inplace
 template <>
 void transform_inplace(Frame::Ptr& frame, const Eigen::Transform<double, 3, Eigen::Isometry>& transformation) {
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     frame->points[i] = transformation * frame->points[i];
   }
 
   if (frame->normals) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       frame->normals[i] = transformation.matrix() * frame->normals[i];
     }
   }
 
   if (frame->covs) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       frame->covs[i] = transformation.matrix() * frame->covs[i] * transformation.matrix().transpose();
     }
   }
@@ -590,12 +590,12 @@ void transform_inplace(Frame::Ptr& frame, const Eigen::Transform<float, 3, Eigen
 
 template <>
 void transform_inplace(Frame::Ptr& frame, const Eigen::Transform<double, 3, Eigen::Affine>& transformation) {
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     frame->points[i] = transformation * frame->points[i];
   }
 
   if (frame->normals) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       Eigen::Matrix4d normal_matrix = Eigen::Matrix4d::Zero();
       normal_matrix.block<3, 3>(0, 0) = transformation.linear().inverse().transpose();
       frame->normals[i] = normal_matrix * frame->normals[i];
@@ -603,7 +603,7 @@ void transform_inplace(Frame::Ptr& frame, const Eigen::Transform<double, 3, Eige
   }
 
   if (frame->covs) {
-    for (int i = 0; i < frame->size(); i++) {
+    for (int i = 0; i < (int)frame->size(); i++) {
       frame->covs[i] = transformation.matrix() * frame->covs[i] * transformation.matrix().transpose();
     }
   }
@@ -618,7 +618,7 @@ void transform_inplace(Frame::Ptr& frame, const Eigen::Transform<float, 3, Eigen
 std::vector<int> find_inlier_points(const Frame::ConstPtr& frame, const std::vector<int>& neighbors, const int k, const double std_thresh) {
   std::vector<double> dists(frame->size());
 
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     const auto& pt = frame->points[i];
 
     double sum_dist = 0.0;
@@ -632,7 +632,7 @@ std::vector<int> find_inlier_points(const Frame::ConstPtr& frame, const std::vec
 
   double sum_dists = 0.0;
   double sum_sq_dists = 0.0;
-  for (int i = 0; i < dists.size(); i++) {
+  for (int i = 0; i < (int)dists.size(); i++) {
     sum_dists += dists[i];
     sum_sq_dists += dists[i] * dists[i];
   }
@@ -644,7 +644,7 @@ std::vector<int> find_inlier_points(const Frame::ConstPtr& frame, const std::vec
   std::vector<int> inliers;
   inliers.reserve(frame->size());
 
-  for (int i = 0; i < frame->size(); i++) {
+  for (int i = 0; i < (int)frame->size(); i++) {
     if (dists[i] < dist_thresh) {
       inliers.emplace_back(i);
     }

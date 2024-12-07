@@ -4,7 +4,7 @@
 #        : https://github.com/magicleap/SuperGluePretrainedNetwork/blob/master/LICENSE
 import sys
 import os
-sys.path.append(os.path.abspath('/ros2_ws/src/dep_repos/superglue'))
+sys.path.append(os.path.abspath('/root/SuperGluePretrainedNetwork'))
 from email.mime import image
 import sys
 import cv2

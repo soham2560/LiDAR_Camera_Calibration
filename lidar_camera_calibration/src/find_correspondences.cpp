@@ -6,7 +6,7 @@
 #include <opencv2/opencv.hpp>
 #include <boost/program_options.hpp>
 
-#include <nlohmann/json.hpp>
+#include <json.hpp>
 
 #include <camera/create_camera.hpp>
 #include <calc_tools/common/visual_lidar_data.hpp>
@@ -69,7 +69,7 @@ public:
     std::vector<double> confidence = matching_result["confidence"];
 
     std::vector<std::pair<Eigen::Vector2d, Eigen::Vector4d>> correspondences;
-    for (int i = 0; i < matches.size(); i++) {
+    for (int i = 0; i < (int)matches.size(); i++) {
       if (matches[i] < 0) {
         continue;
       }
@@ -79,7 +79,6 @@ public:
 
       std::int32_t point_index = point_indices.at<std::int32_t>(kp1.y(), kp1.x());
 
-      const int pick_window_size = 2;
       if(point_index < 0) {
         for(const auto& offset : pick_offsets) {
           point_index = point_indices.at<std::int32_t>(kp1.y() + offset.y(), kp1.x() + offset.x());
