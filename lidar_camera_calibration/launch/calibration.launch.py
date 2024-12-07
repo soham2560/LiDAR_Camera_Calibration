@@ -78,7 +78,7 @@ def generate_launch_description():
         ]
     )
 
-    rviz_node = Node(
+    rviz_node_hw = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
@@ -89,7 +89,7 @@ def generate_launch_description():
         condition=IfCondition(enable_hardware),
     )
 
-    rviz_node = Node(
+    rviz_node_sw = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
@@ -216,7 +216,8 @@ def generate_launch_description():
 
     nodes = [
         robot_state_pub_node,
-        rviz_node,
+        rviz_node_hw,
+        rviz_node_sw,
         rosbag_recorder_launch,
         sync_sensors,
         preprocess_node,

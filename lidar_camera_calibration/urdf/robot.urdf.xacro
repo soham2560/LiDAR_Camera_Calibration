@@ -66,7 +66,7 @@
 
     <!-- CAMERA -->
     <xacro:sensor_d455 parent="velodyne_base_link" use_nominal_extrinsics="True" name="camera">
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0.1 0.1 0.1" rpy="0 0 ${PI/3}"/>
     </xacro:sensor_d455>
 
 </robot>
