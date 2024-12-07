@@ -4,7 +4,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction, ExecuteProcess
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
@@ -61,6 +61,12 @@ def generate_launch_description():
     xacro_path = PathJoinSubstitution(
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
+
+    data_base_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data"
+    inside2_path = os.path.join(data_base_path, "inside2")
+    inside2_extract_path = os.path.join(data_base_path, "inside2_extract")
+
+
 
     robot_state_pub_node = Node(
         package='robot_state_publisher',
@@ -136,6 +142,47 @@ def generate_launch_description():
         condition=IfCondition(enable_hardware)
     )
 
+    # Preprocess command
+    preprocess_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'preprocess', 
+             inside2_path, 
+             inside2_extract_path, 
+             '-ad'],
+        name='preprocess',
+        output='screen'
+    )
+
+    # Find matches with SuperGlue command (triggered after preprocess finishes)
+    find_matches_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_matches_superglue.py', 
+             inside2_extract_path, 
+             '--rotate_camera', '180'],
+        name='find_matches',
+        output='screen'
+    )
+
+    # Find correspondences command (triggered after find_matches finishes)
+    find_correspondences_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_correspondences', 
+             inside2_extract_path],
+        name='find_correspondences',
+        output='screen'
+    )
+
+    find_matches_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=preprocess_node,
+            on_exit=[find_matches_node]
+        )
+    )
+
+    find_correspondences_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=find_matches_node,
+            on_exit=[find_correspondences_node]
+        )
+    )
+
     zhangs_node = Node(
         package='lidar_camera_calibration',
         executable='zhangs',
@@ -143,6 +190,15 @@ def generate_launch_description():
         output='screen',
         parameters=[zhangs_config_path]
     )
+
+    zhangs_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=find_correspondences_node,
+            on_exit=[zhangs_node]
+        )
+    )
+
+
     calibration_node = RegisterEventHandler(
         OnProcessExit(
             target_action=zhangs_node,
@@ -162,9 +218,12 @@ def generate_launch_description():
         robot_state_pub_node,
         rviz_node,
         rosbag_recorder_launch,
+        # sync_sensors,
+        preprocess_node , # preprocess_handler,
+        find_matches_handler,
+        find_correspondences_handler,
+        zhangs_handler,
         calibration_node,
-        zhangs_node,
-        sync_sensors,
         velodyne_hw_if,
         camera_driver
     ]
