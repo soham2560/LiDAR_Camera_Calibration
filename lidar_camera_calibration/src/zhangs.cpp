@@ -35,7 +35,7 @@ private:
         int N = object_points.size();
 
         std::vector<cv::Mat> homographies;
-        for (int i = 0; i < N; ++i) {
+        for (int i = 0; i < (int)N; ++i) {
             cv::Mat A(2 * pattern_height * pattern_width, 9, CV_64F, cv::Scalar(0));
             
             for (int j = 0; j < pattern_height * pattern_width; ++j) {
@@ -67,7 +67,7 @@ private:
         }
 
         cv::Mat V(2 * N, 6, CV_64F);
-        for (int i = 0; i < N; ++i) {
+        for (int i = 0; i < (int)N; ++i) {
             cv::Mat H = homographies[i];
             
             V.at<double>(2*i, 0) = H.at<double>(0,0) * H.at<double>(0,1);
@@ -113,7 +113,7 @@ private:
         cv::Size pattern_size(pattern_width, pattern_height);
 
         std::vector<cv::Point3f> obj;
-        for (int i = 0; i < pattern_height; ++i)
+        for (int i = 0; i < (int)pattern_height; ++i)
             for (int j = 0; j < pattern_width; ++j)
                 obj.emplace_back(j * square_size, i * square_size, 0.0);
 
@@ -176,7 +176,7 @@ private:
     std::string format_matrix(const cv::Mat& mat) {
         std::stringstream ss;
         ss << std::fixed << std::setprecision(4);
-        for (int i = 0; i < mat.rows; ++i) {
+        for (int i = 0; i < (int)mat.rows; ++i) {
             for (int j = 0; j < mat.cols; ++j) {
                 ss << std::setw(10) << mat.at<double>(i, j) << " ";
             }
@@ -195,7 +195,7 @@ private:
                             output_path.string().c_str());
                 return;
             }
-            for (int i = 0; i < camera_matrix.rows; ++i) {
+            for (int i = 0; i < (int)camera_matrix.rows; ++i) {
                 for (int j = 0; j < camera_matrix.cols; ++j) {
                     file << std::fixed << std::setprecision(6) << camera_matrix.at<double>(i, j) << " ";
                 }

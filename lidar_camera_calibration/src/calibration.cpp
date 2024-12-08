@@ -73,14 +73,14 @@ private:
 
         cameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
         
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 file >> cameraMatrix.at<double>(i, j);
             }
         }
 
         Eigen::Matrix4d camera_matrix_eigen = Eigen::Matrix4d::Zero();
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 camera_matrix_eigen(i, j) = cameraMatrix.at<double>(i, j);
             }
@@ -92,7 +92,7 @@ private:
     static std::string MatrixToString(const Eigen::Matrix4d& mat) {
         std::stringstream ss;
         ss << std::fixed << std::setprecision(4);
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < (int)4; ++i) {
             for (int j = 0; j < 4; ++j) {
                 ss << std::setw(10) << mat(i,j) << " ";
             }
@@ -205,7 +205,7 @@ private:
         }
 
         file << "LiDAR Sensor to Camera Sensor Transformation Matrix:\n";
-        for (int i = 0; i < 4; ++i) {
+        for (int i = 0; i < (int)4; ++i) {
             for (int j = 0; j < 4; ++j) {
                 file << T_lidar_sensor_to_camera_sensor(i, j) << " ";
             }
@@ -213,7 +213,7 @@ private:
         }
 
         file << "\nCamera Matrix (K):\n";
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 file << cameraMatrix.at<double>(i, j) << " ";
             }
@@ -295,7 +295,7 @@ private:
 
         points2D.clear();
         points3D.clear();
-        for (int i = 0; i < inliers.rows; ++i) {
+        for (int i = 0; i < (int)inliers.rows; ++i) {
             int idx = inliers.at<int>(i);
             points2D.push_back(temp_points2D[idx]);
             points3D.push_back(temp_points3D[idx]);
@@ -398,14 +398,14 @@ private:
 
         cv::Mat R_cv = cv::Mat(3, 3, CV_64F);
 
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 R_cv.at<double>(i, j) = R(i, j);
             }
         }
 
         cv::Rodrigues(R_cv, rvec);
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             tvec.at<double>(i, 0) = t(i);
         }
 
@@ -433,7 +433,7 @@ private:
             cameraMatrix.at<double>(0, 2),  // cx
             cameraMatrix.at<double>(1, 2)   // cy
         };
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             rvex[i] = rvec.at<double>(i, 0);
             tvec_data[i] = tvec.at<double>(i, 0);
         }
@@ -469,7 +469,7 @@ private:
                     rvex[0], rvex[1], rvex[2]);
         RCLCPP_INFO(get_logger(), "Translation: [%f, %f, %f]", 
                     tvec_data[0], tvec_data[1], tvec_data[2]);
-        for (int i = 0; i < 3; ++i) {
+        for (int i = 0; i < (int)3; ++i) {
             rvec.at<double>(i, 0) = rvex[i];
             tvec.at<double>(i, 0) = tvec_data[i];
             axis_angle[i] = rvex[i];

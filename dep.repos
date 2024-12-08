@@ -1,5 +1,0 @@
-repositories:
-  velodyne-driver:
-    type: git
-    url: git@github.com:ros-drivers/velodyne.git
-    version: 2.5.1

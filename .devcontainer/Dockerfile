@@ -99,7 +99,13 @@ RUN apt-fast update \
    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
-RUN git clone https://github.com/magicleap/SuperGluePretrainedNetwork /root/SuperGluePretrainedNetwork
+RUN git clone https://github.com/magicleap/SuperGluePretrainedNetwork /home/container_user/SuperGluePretrainedNetwork
+
+RUN git clone https://github.com/Microsoft/vcpkg.git /vcpkg
+WORKDIR /vcpkg
+RUN ./bootstrap-vcpkg.sh
+RUN ./vcpkg integrate install
+RUN ./vcpkg install sophus
 
 WORKDIR /ros2_ws/src
 USER container_user

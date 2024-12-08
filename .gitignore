@@ -1,1 +1,3 @@
 records/
+dep_repos/
+lidar_camera_calibration/data/rosbag_data

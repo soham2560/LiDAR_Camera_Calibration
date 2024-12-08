@@ -4,7 +4,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, RegisterEventHandler, Shutdown, SetEnvironmentVariable, IncludeLaunchDescription, TimerAction, ExecuteProcess
 from launch.conditions import IfCondition, UnlessCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
@@ -29,11 +29,6 @@ def generate_launch_description():
             description='Record in rosbag'))
     declared_arguments.append(
         DeclareLaunchArgument(
-            'use_rviz',
-            default_value='False',
-            description='Launch RVIZ on startup'))
-    declared_arguments.append(
-        DeclareLaunchArgument(
             'enable_hardware',
             default_value='False',
             description='Enable hardware drivers'))
@@ -43,7 +38,6 @@ def generate_launch_description():
 
     namespace = LaunchConfiguration('namespace')
     record = LaunchConfiguration('record')
-    use_rviz = LaunchConfiguration('use_rviz')
     enable_hardware = LaunchConfiguration('enable_hardware')
 
     package_path = get_package_share_directory('lidar_camera_calibration')
@@ -62,6 +56,12 @@ def generate_launch_description():
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
 
+    data_base_path = os.path.join(package_path, "data","rosbag_data")
+    rosbag_path = os.path.join(data_base_path, "rosbags")
+    rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
+
+
+
     robot_state_pub_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -78,15 +78,26 @@ def generate_launch_description():
         ]
     )
 
-    rviz_node = Node(
+    rviz_node_hw = Node(
         package='rviz2',
         executable='rviz2',
         name='rviz2',
         output='log',
         namespace=namespace,
-        arguments=['-d', package_path + '/rviz/robot.rviz'],
+        arguments=['-d', package_path + '/rviz/robot_hw.rviz'],
         on_exit=Shutdown(),
-        condition=IfCondition(use_rviz),
+        condition=IfCondition(enable_hardware),
+    )
+
+    rviz_node_sw = Node(
+        package='rviz2',
+        executable='rviz2',
+        name='rviz2',
+        output='log',
+        namespace=namespace,
+        arguments=['-d', package_path + '/rviz/robot_sw.rviz'],
+        on_exit=Shutdown(),
+        condition=UnlessCondition(enable_hardware),
     )
 
     rosbag_recorder_launch = TimerAction(
@@ -136,6 +147,43 @@ def generate_launch_description():
         condition=IfCondition(enable_hardware)
     )
 
+    preprocess_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'preprocess', 
+             rosbag_path, 
+             rosbag_extract_path, 
+             '-ad'],
+        name='preprocess',
+        output='screen'
+    )
+
+    find_matches_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_matches_superglue.py', 
+             rosbag_extract_path],
+        name='find_matches',
+        output='screen'
+    )
+
+    find_correspondences_node = ExecuteProcess(
+        cmd=['ros2', 'run', 'lidar_camera_calibration', 'find_correspondences', 
+             rosbag_extract_path],
+        name='find_correspondences',
+        output='screen'
+    )
+
+    find_matches_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=preprocess_node,
+            on_exit=[find_matches_node]
+        )
+    )
+
+    find_correspondences_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=find_matches_node,
+            on_exit=[find_correspondences_node]
+        )
+    )
+
     zhangs_node = Node(
         package='lidar_camera_calibration',
         executable='zhangs',
@@ -143,6 +191,14 @@ def generate_launch_description():
         output='screen',
         parameters=[zhangs_config_path]
     )
+
+    zhangs_handler = RegisterEventHandler(
+        OnProcessExit(
+            target_action=find_correspondences_node,
+            on_exit=[zhangs_node]
+        )
+    )
+
     calibration_node = RegisterEventHandler(
         OnProcessExit(
             target_action=zhangs_node,
@@ -160,11 +216,15 @@ def generate_launch_description():
 
     nodes = [
         robot_state_pub_node,
-        rviz_node,
+        rviz_node_hw,
+        rviz_node_sw,
         rosbag_recorder_launch,
-        calibration_node,
-        zhangs_node,
         sync_sensors,
+        preprocess_node,
+        find_matches_handler,
+        find_correspondences_handler,
+        zhangs_handler,
+        calibration_node,
         velodyne_hw_if,
         camera_driver
     ]
