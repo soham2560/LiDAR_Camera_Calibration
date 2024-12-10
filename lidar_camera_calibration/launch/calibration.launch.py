@@ -56,11 +56,8 @@ def generate_launch_description():
         [package_path, 'urdf', 'robot.urdf.xacro']
     )
 
-    data_base_path = os.path.join(package_path, "data","rosbag_data")
-    rosbag_path = os.path.join(data_base_path, "rosbags")
-    rosbag_extract_path = os.path.join(data_base_path, "rosbag_extract")
-
-
+    rosbag_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data/rosbags"
+    rosbag_extract_path = "/ros2_ws/src/lidar_camera_calibration/data/rosbag_data/rosbag_extract"
 
     robot_state_pub_node = Node(
         package='robot_state_publisher',
