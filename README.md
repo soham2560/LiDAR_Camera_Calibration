@@ -3,6 +3,9 @@ ROS2 Setup to perform LiDAR-Camera Calibration for Mobile Robotics Course (CS7.5
 
 - Professor: [K. Madhava Krishna](https://faculty.iiit.ac.in/~mkrishna/)
 
+The Project was completed in its entirety by:
+- Soham Patil ([@soham2560](https://github.com/soham2560))
+- Samaksh Ujjawal ([@Samaksh6398](https://github.com/Samaksh6398))
 ## Table of contents
 
 - [LiDAR Camera Calibration](#lidar-camera-calibration)
